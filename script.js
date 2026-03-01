@@ -58,9 +58,7 @@ function renderProducts() {
         <p class="price">₹ <span>${product.price}</span></p>
         <button onclick="orderProduct('${category}', ${index})">Order</button>
         <button class="delete-btn hidden"
-          onclick="deleteProduct('${category}', ${index})">
-          Delete
-        </button>
+          onclick="deleteProduct('${category}', ${index})">Delete</button>
       `;
 
       box.appendChild(card);
@@ -77,9 +75,7 @@ createFilters();
 function orderProduct(category, index) {
   const product = data[category][index];
   const msg = `I want details about ${product.name} - Price ₹${product.price}`;
-  window.open(
-    `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`
-  );
+  window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`);
 }
 
 function deleteProduct(category, index) {
@@ -93,8 +89,7 @@ function deleteProduct(category, index) {
   FILTER & SEARCH
 *********************/
 function scrollToProducts() {
-  document
-    .getElementById("products")
+  document.getElementById("products")
     .scrollIntoView({ behavior: "smooth" });
 }
 
@@ -120,16 +115,12 @@ function filterCategory(category) {
 }
 
 function showAll() {
-  document
-    .querySelectorAll(".category")
-    .forEach(sec => (sec.style.display = "block"));
+  document.querySelectorAll(".category")
+    .forEach(sec => sec.style.display = "block");
 }
 
 function searchProducts() {
-  const input = document
-    .getElementById("searchInput")
-    .value.toLowerCase();
-
+  const input = document.getElementById("searchInput").value.toLowerCase();
   document.querySelectorAll(".card").forEach(card => {
     const name = card.querySelector("h3").innerText.toLowerCase();
     card.style.display = name.includes(input) ? "block" : "none";
@@ -144,54 +135,43 @@ if (urlParams.get("edit") === password) {
   enableEditMode();
   enableBgEditor();
 }
+
 function enableEditMode() {
+  if (document.getElementById("adminBarMain")) return;
+
   alert("Edit Mode Activated");
 
-  /* CATEGORY RENAME */
-  document.querySelectorAll(".cat-title").forEach(title => {
-    title.dataset.old = title.innerText;
-    title.contentEditable = true;
-
-    title.addEventListener("blur", () => {
-      const oldName = title.dataset.old;
-      const newName = title.innerText.trim();
-
-      if (!oldName || oldName === newName) return;
-
-      data[newName] = data[oldName];
-      delete data[oldName];
-
-      saveData();
-      renderProducts();
-      createFilters();
-      enableEditMode();
-    });
-  });
-
-  /* ADMIN BAR */
   const adminBar = document.createElement("div");
   adminBar.className = "admin-bar";
-
-  const options = Object.keys(data)
-    .map(cat => `<option value="${cat}">${cat}</option>`)
-    .join("");
+  adminBar.id = "adminBarMain";
 
   adminBar.innerHTML = `
-    <select id="newCategory">${options}</select>
+    <h3>🛠 Product Editor</h3>
+
+    <input type="text" id="newCategoryName"
+      placeholder="New Category (optional)">
+
+    <br><br>
+
+    <select id="newCategory"></select>
+
+    <br><br>
+
     <input type="text" id="newName" placeholder="Product Name">
     <input type="number" id="newPrice" placeholder="Price">
+
+    <br><br>
     <button onclick="addProduct()">Add Product</button>
   `;
 
   document.body.insertBefore(adminBar, container);
+  updateCategoryDropdown();
 
-  /* EDIT PRICE */
+  /* PRICE EDIT */
   document.querySelectorAll(".price span").forEach(span => {
     span.contentEditable = true;
-
     span.addEventListener("blur", () => {
       const name = span.closest(".card").querySelector("h3").innerText;
-
       for (let cat in data) {
         data[cat].forEach(p => {
           if (p.name === name) p.price = span.innerText;
@@ -204,13 +184,11 @@ function enableEditMode() {
   /* IMAGE UPLOAD */
   document.querySelectorAll(".img-input").forEach(input => {
     input.classList.remove("hidden");
-
     input.addEventListener("change", function () {
       const reader = new FileReader();
       reader.onload = () => {
         const card = input.parentElement;
         card.querySelector("img").src = reader.result;
-
         const name = card.querySelector("h3").innerText;
         for (let cat in data) {
           data[cat].forEach(p => {
@@ -223,23 +201,45 @@ function enableEditMode() {
     });
   });
 
-  document
-    .querySelectorAll(".delete-btn")
+  document.querySelectorAll(".delete-btn")
     .forEach(btn => btn.classList.remove("hidden"));
 }
 
+function updateCategoryDropdown() {
+  const select = document.getElementById("newCategory");
+  if (!select) return;
+  select.innerHTML = "";
+  Object.keys(data).forEach(cat => {
+    const opt = document.createElement("option");
+    opt.value = cat;
+    opt.innerText = cat;
+    select.appendChild(opt);
+  });
+}
+
 function addProduct() {
-  const cat = document.getElementById("newCategory").value;
-  const name = document.getElementById("newName").value;
+  const newCat = document.getElementById("newCategoryName").value.trim();
+  let cat = document.getElementById("newCategory").value;
+  const name = document.getElementById("newName").value.trim();
   const price = document.getElementById("newPrice").value;
 
-  if (name && price) {
-    data[cat].push({ name, price });
-    saveData();
-    renderProducts();
-    createFilters();
-    enableEditMode();
+  if (newCat) {
+    if (!data[newCat]) data[newCat] = [];
+    cat = newCat;
   }
+
+  if (!cat || !name || !price) {
+    alert("Category, Product name & price required");
+    return;
+  }
+
+  data[cat].push({ name, price });
+  saveData();
+
+  renderProducts();
+  createFilters();
+  document.getElementById("adminBarMain").remove();
+  enableEditMode();
 }
 
 /*********************
@@ -295,8 +295,9 @@ function getBotReply(msg) {
 
   return "Madad ke liye WhatsApp kare 👉 https://wa.me/919548021272";
 }
+
 /*********************
-  BACKGROUND EDITOR (EDIT MODE ONLY)
+  BACKGROUND EDITOR
 *********************/
 function enableBgEditor() {
   if (document.getElementById("bgEditor")) return;
@@ -307,17 +308,9 @@ function enableBgEditor() {
 
   bar.innerHTML = `
     <h3>🎨 Background Editor</h3>
-
-    <label>Background Color</label><br>
     <input type="color" onchange="setBgColor(this.value)">
-
-    <br><br>
-
-    <label>Background Image</label><br>
     <input type="file" accept="image/*" onchange="setBgImage(this)">
-
-    <br><br>
-    <button onclick="resetBg()">Reset Background</button>
+    <button onclick="resetBg()">Reset</button>
   `;
 
   document.body.insertBefore(bar, document.body.firstChild);
@@ -343,24 +336,15 @@ function setBgImage(input) {
   reader.readAsDataURL(file);
 }
 
-function loadBg() {
-  const color = localStorage.getItem("bgColor");
-  const img = localStorage.getItem("bgImage");
-
-  if (img) {
-    document.body.style.backgroundImage = `url('${img}')`;
-    document.body.style.backgroundSize = "cover";
-    document.body.style.backgroundPosition = "center";
-  } else if (color) {
-    document.body.style.backgroundColor = color;
-  }
-}
-
 function resetBg() {
   localStorage.removeItem("bgColor");
   localStorage.removeItem("bgImage");
-  document.body.style.backgroundColor = "";
-  document.body.style.backgroundImage = "";
+  document.body.style.background = "";
 }
 
-loadBg();
+(function loadBg(){
+  const c = localStorage.getItem("bgColor");
+  const i = localStorage.getItem("bgImage");
+  if (i) setBgImage({ files:[i] });
+  else if (c) setBgColor(c);
+})();
