@@ -1,123 +1,324 @@
-/*********************
- DESIGN EDIT MODE
-*********************/
-function loadDesign() {
-  const design = JSON.parse(localStorage.getItem("designSettings")) || {};
-  for (let key in design) {
-    if (key === "--hero-bg") continue;
-    document.documentElement.style.setProperty(key, design[key]);
-  }
+/* ================= ROOT EDITABLE COLORS ================= */
+:root{
+  --primary-color: #ff7a00;
+  --secondary-color: #25D366;
+  --bg-dark: #0f0f0f;
+  --card-bg: #1b1b1b;
+  --text-color: #ffffff;
+  --highlight-bg: #1a1a1a;
+  --chat-gradient-1: #ff00cc;
+  --chat-gradient-2: #3333ff;
 }
 
-function saveDesign(key, value) {
-  let design = JSON.parse(localStorage.getItem("designSettings")) || {};
-  design[key] = value;
-  localStorage.setItem("designSettings", JSON.stringify(design));
+/* ================= GLOBAL ================= */
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background: var(--bg-dark);
+  color: var(--text-color);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
-loadDesign();
-
-function enableDesignEditor() {
-  let panel = document.createElement("div");
-  panel.className = "admin-bar";
-  panel.innerHTML = `
-    <h3>🎨 Design Editor</h3>
-
-    <label>Primary Color</label>
-    <input type="color" onchange="updateColor('--primary-color',this.value)">
-
-    <label>Background Color</label>
-    <input type="color" onchange="updateColor('--bg-dark',this.value)">
-
-    <label>Chat Color 1</label>
-    <input type="color" onchange="updateColor('--chat-gradient-1',this.value)">
-
-    <label>Chat Color 2</label>
-    <input type="color" onchange="updateColor('--chat-gradient-2',this.value)">
-
-    <br><br>
-    <label>Hero Background Image</label>
-    <input type="file" accept="image/*" onchange="uploadHeroBg(this)">
-
-    <br><br>
-    <button onclick="resetDesign()">♻️ Reset Design</button>
-  `;
-  document.body.insertBefore(panel, document.body.firstChild);
+/* ================= HERO ================= */
+.hero{
+  text-align:center;
+  padding:70px 20px;
+  background: linear-gradient(135deg, var(--primary-color), #111);
+  background-size:cover;
+  background-position:center;
+  animation: glow 3s infinite alternate;
 }
 
-function updateColor(variable, value) {
-  document.documentElement.style.setProperty(variable, value);
-  saveDesign(variable, value);
+@keyframes glow{
+  from{box-shadow:0 0 20px var(--primary-color);}
+  to{box-shadow:0 0 40px var(--primary-color);}
 }
 
-function uploadHeroBg(input) {
-  const file = input.files[0];
-  const reader = new FileReader();
-  reader.onload = () => {
-    document.querySelector(".hero").style.backgroundImage =
-      `url('${reader.result}')`;
-    saveDesign("--hero-bg", `url('${reader.result}')`);
-  };
-  reader.readAsDataURL(file);
+.buttons button{
+  padding:10px 20px;
+  margin:10px;
+  border:none;
+  cursor:pointer;
+  border-radius:5px;
+  background: var(--primary-color);
+  color:#000;
 }
 
-function applyHeroBg() {
-  const design = JSON.parse(localStorage.getItem("designSettings")) || {};
-  if (design["--hero-bg"]) {
-    document.querySelector(".hero").style.backgroundImage = design["--hero-bg"];
-  }
+.whatsapp{
+  background: var(--secondary-color) !important;
+  color:#fff;
 }
 
-function resetDesign(){
-  localStorage.removeItem("designSettings");
-  location.reload();
+/* ================= HIGHLIGHT ================= */
+.highlight{
+  text-align:center;
+  padding:15px;
+  background: var(--highlight-bg);
 }
 
-applyHeroBg();
-/* ===== FIX BROKEN PRODUCT LAYOUT ===== */
-
-.category h2{
-  font-size:28px;
-  margin:20px 0 10px;
-  color: var(--primary-color);
+/* ================= SEARCH & FILTER ================= */
+.search-bar{
+  text-align:center;
+  padding:20px;
 }
 
-/* Products grid fix */
+.search-bar input{
+  padding:10px;
+  width:60%;
+  max-width:400px;
+  border-radius:5px;
+  border:none;
+}
+
+.filter-bar{
+  text-align:center;
+  margin-bottom:20px;
+}
+
+.filter-bar button{
+  margin:5px;
+  padding:6px 12px;
+  border:none;
+  background: var(--primary-color);
+  cursor:pointer;
+  border-radius:4px;
+  color:#000;
+}
+
+/* ================= PRODUCTS ================= */
+.category{
+  padding:20px;
+}
+
 .products{
   display:flex;
   flex-wrap:wrap;
-  gap:20px;
   justify-content:center;
 }
 
-/* Card alignment fix */
 .card{
   background: var(--card-bg);
   width:240px;
+  margin:15px;
   padding:15px;
   border-radius:10px;
   text-align:center;
+  box-shadow:0 0 10px rgba(255,140,0,0.4);
+  transition:0.3s;
 }
 
-/* Hide ugly default file input */
-.img-input{
-  display:none;
+.card:hover{
+  transform:scale(1.05);
 }
 
-/* Show upload button only in edit mode */
-.admin-bar ~ #products .img-input{
-  display:block;
-  margin:8px auto;
+.card img{
+  width:100%;
+  border-radius:8px;
+}
+
+.price{
+  font-size:18px;
+  margin:8px 0;
+}
+
+.card button{
+  padding:8px;
+  background: var(--primary-color);
+  border:none;
+  cursor:pointer;
+  border-radius:4px;
+  margin:5px;
+}
+
+/* ================= ADMIN ================= */
+.admin-bar{
+  text-align:center;
+  padding:15px;
+  background:#222;
+  border-bottom:2px solid var(--primary-color);
+}
+
+.admin-bar input,
+.admin-bar select{
+  padding:6px;
+  margin:5px;
+}
+
+.delete-btn{
+  background:red !important;
   color:white;
 }
 
-/* Better buttons spacing */
-.card button{
-  margin:6px 4px;
+.hidden{
+  display:none;
 }
 
-/* Price spacing fix */
-.price{
-  margin:10px 0;
+/* ================= FLOATING WHATSAPP ================= */
+.floating-whatsapp{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  background: var(--secondary-color);
+  color:white;
+  padding:15px 18px;
+  border-radius:50%;
+  font-size:20px;
+  text-decoration:none;
+  box-shadow:0 0 10px var(--secondary-color);
+}
+
+/* ================= FOOTER ================= */
+footer{
+  text-align:center;
+  padding:20px;
+  background:#111;
+  margin-top:40px;
+}
+
+/* ================= CHAT BUTTON ================= */
+#chatButton{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  background: linear-gradient(45deg,
+    var(--chat-gradient-1),
+    var(--chat-gradient-2)
+  );
+  color:white;
+  font-size:22px;
+  padding:16px;
+  border-radius:50%;
+  cursor:pointer;
+  box-shadow:0 0 20px var(--chat-gradient-1);
+  animation: chatGlow 2s infinite alternate;
+  z-index:999;
+}
+
+@keyframes chatGlow{
+  from{box-shadow:0 0 15px var(--chat-gradient-1);}
+  to{box-shadow:0 0 30px var(--chat-gradient-2);}
+}
+
+/* ================= CHAT BOX ================= */
+#chatBox{
+  position:fixed;
+  bottom:80px;
+  right:20px;
+  width:340px;
+  height:480px;
+  backdrop-filter: blur(20px);
+  background: rgba(0,0,0,0.65);
+  border-radius:20px;
+  border:2px solid rgba(255,255,255,0.3);
+  box-shadow:0 15px 40px rgba(0,0,0,0.4);
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  z-index:999;
+}
+
+.chat-header{
+  background: linear-gradient(90deg,
+    var(--chat-gradient-1),
+    var(--chat-gradient-2)
+  );
+  color:white;
+  padding:15px;
   font-weight:bold;
+  display:flex;
+  justify-content:space-between;
+}
+
+/* ================= CHAT MESSAGES ================= */
+.chat-messages{
+  flex:1;
+  padding:12px;
+  overflow-y:auto;
+  color:white;
+}
+
+.user-message{
+  background: var(--chat-gradient-2);
+  padding:8px 12px;
+  border-radius:15px;
+  margin:6px 0;
+  text-align:right;
+  max-width:80%;
+}
+
+.bot-message{
+  background: var(--chat-gradient-1);
+  padding:8px 12px;
+  border-radius:15px;
+  margin:6px 0;
+  max-width:80%;
+}
+
+/* ================= CHAT INPUT ================= */
+.chat-input{
+  display:flex;
+  border-top:1px solid rgba(255,255,255,0.3);
+}
+
+.chat-input input{
+  flex:1;
+  border:none;
+  padding:12px;
+  outline:none;
+  background:transparent;
+  color:white;
+}
+
+.chat-input button{
+  background: var(--chat-gradient-2);
+  color:white;
+  border:none;
+  padding:12px;
+  cursor:pointer;
+}
+
+.chat-input button:hover{
+  background: var(--chat-gradient-1);
+}
+
+/* ================= BACKGROUND EDITOR PANEL ================= */
+#bgEditor{
+  position:sticky;
+  top:0;
+  z-index:3000;
+  background:#222;
+  color:white;
+  padding:12px;
+  border-bottom:2px solid var(--primary-color);
+}
+
+#bgEditor label{
+  color:#ffcc00;
+  font-size:14px;
+}
+
+#bgEditor input,
+#bgEditor button{
+  margin:5px;
+}
+
+/* ================= MOBILE ================= */
+@media(max-width:768px){
+  .products{
+    flex-direction:column;
+    align-items:center;
+  }
+  .search-bar input{
+    width:90%;
+  }
+}
+
+@media(max-width:500px){
+  #chatBox{
+    width:90%;
+    right:5%;
+    height:70%;
+  }
 }
