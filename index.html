@@ -6,21 +6,9 @@
 <title>Saini Electricals – Roorkee</title>
 <link rel="stylesheet" href="style.css">
 </head>
-<!-- AI Chat Button -->
-<div id="chatButton" onclick="toggleChat()">🤖</div>
 
-<!-- AI Chat Box -->
-<div id="chatBox" class="hidden">
-    <div class="chat-header">
-        Saini Electricals Assistant
-        <span onclick="toggleChat()">✖</span>
-    </div>
-    <div id="chatMessages" class="chat-messages"></div>
-    <div class="chat-input">
-        <input type="text" id="userInput" placeholder="Ask something..." onkeypress="handleKey(event)">
-        <button onclick="sendMessage()">Send</button>
-    </div>
-</div>
+<body>
+
 <!-- CHAT BUTTON -->
 <div id="chatButton" onclick="toggleChat()">💬</div>
 
@@ -34,7 +22,11 @@
     <div id="chatMessages" class="chat-messages"></div>
 
     <div class="chat-input">
-        <input type="text" id="userInput" placeholder="Type your message..." onkeypress="handleKey(event)">
+        <input 
+            type="text" 
+            id="userInput" 
+            placeholder="Ask something..." 
+            onkeypress="handleKey(event)">
         <button onclick="sendMessage()">Send</button>
     </div>
 
@@ -44,7 +36,6 @@
         </a>
     </div>
 </div>
-<body>
 
 <header class="hero">
 <h1>🏪 SAINI ELECTRICALS – ROORKEE</h1>
