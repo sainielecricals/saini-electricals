@@ -74,3 +74,50 @@ function resetDesign(){
 }
 
 applyHeroBg();
+/* ===== FIX BROKEN PRODUCT LAYOUT ===== */
+
+.category h2{
+  font-size:28px;
+  margin:20px 0 10px;
+  color: var(--primary-color);
+}
+
+/* Products grid fix */
+.products{
+  display:flex;
+  flex-wrap:wrap;
+  gap:20px;
+  justify-content:center;
+}
+
+/* Card alignment fix */
+.card{
+  background: var(--card-bg);
+  width:240px;
+  padding:15px;
+  border-radius:10px;
+  text-align:center;
+}
+
+/* Hide ugly default file input */
+.img-input{
+  display:none;
+}
+
+/* Show upload button only in edit mode */
+.admin-bar ~ #products .img-input{
+  display:block;
+  margin:8px auto;
+  color:white;
+}
+
+/* Better buttons spacing */
+.card button{
+  margin:6px 4px;
+}
+
+/* Price spacing fix */
+.price{
+  margin:10px 0;
+  font-weight:bold;
+}
