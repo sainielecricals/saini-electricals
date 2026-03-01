@@ -39,7 +39,7 @@ function renderProducts() {
     section.className = "category";
 
     section.innerHTML = `
-      <h2 class="cat-title">${category}</h2>
+      <h2 class="cat-title" data-cat="${category}">${category}</h2>
       <div class="products"></div>
     `;
 
@@ -81,6 +81,7 @@ function deleteProduct(category, index) {
   data[category].splice(index, 1);
   saveData();
   renderProducts();
+  createFilters();
   enableEditMode();
 }
 
@@ -106,7 +107,7 @@ function createFilters() {
 function filterCategory(category) {
   document.querySelectorAll(".category").forEach(sec => {
     sec.style.display =
-      sec.querySelector("h2").innerText === category ? "block" : "none";
+      sec.querySelector(".cat-title").innerText === category ? "block" : "none";
   });
 }
 
@@ -128,19 +129,22 @@ function searchProducts() {
 const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.get("edit") === password) {
   enableEditMode();
+  enableDesignEditor();
 }
 
 function enableEditMode() {
+  if (document.querySelector(".admin-bar")) return;
+
   alert("Edit Mode Activated");
 
-  // Category rename enable
+  // Category rename
   document.querySelectorAll(".cat-title").forEach(title => {
+    const oldName = title.innerText;
     title.contentEditable = true;
-    title.addEventListener("blur", () => {
-      let oldName = Object.keys(data).find(k => k === title.dataset.old);
-      let newName = title.innerText;
 
-      if (!oldName || oldName === newName) return;
+    title.addEventListener("blur", () => {
+      const newName = title.innerText.trim();
+      if (!newName || newName === oldName) return;
 
       data[newName] = data[oldName];
       delete data[oldName];
@@ -149,7 +153,6 @@ function enableEditMode() {
       createFilters();
       enableEditMode();
     });
-    title.dataset.old = title.innerText;
   });
 
   // Admin bar
@@ -169,7 +172,7 @@ function enableEditMode() {
 
   document.body.insertBefore(adminBar, container);
 
-  // Editable prices
+  // Editable price
   document.querySelectorAll(".price span").forEach(span => {
     span.contentEditable = true;
     span.addEventListener("blur", () => {
@@ -203,7 +206,9 @@ function enableEditMode() {
     });
   });
 
-  document.querySelectorAll(".delete-btn").forEach(btn => btn.classList.remove("hidden"));
+  document.querySelectorAll(".delete-btn").forEach(btn =>
+    btn.classList.remove("hidden")
+  );
 }
 
 function addProduct() {
@@ -221,7 +226,7 @@ function addProduct() {
 }
 
 /*********************
-  CHATBOT (FINAL)
+  CHATBOT
 *********************/
 function toggleChat() {
   document.getElementById("chatBox").classList.toggle("hidden");
@@ -236,18 +241,18 @@ function sendMessage() {
   let msg = input.value.trim();
   if (!msg) return;
 
-  addChat(msg, "user");
+  addChat(msg, "user-message");
   input.value = "";
 
   setTimeout(() => {
-    addChat(getBotReply(msg), "bot");
+    addChat(getBotReply(msg), "bot-message");
   }, 600);
 }
 
-function addChat(text, type) {
+function addChat(text, cls) {
   let chat = document.getElementById("chatMessages");
   let div = document.createElement("div");
-  div.className = type;
+  div.className = cls;
   div.innerText = text;
   chat.appendChild(div);
   chat.scrollTop = chat.scrollHeight;
@@ -257,10 +262,10 @@ function getBotReply(msg) {
   msg = msg.toLowerCase();
 
   if (msg.includes("ac"))
-    return "Blue Star 1.5 Ton AC available. Same day delivery. WhatsApp 👉 https://wa.me/919548021272";
+    return "Blue Star 1.5 Ton AC available. Same day delivery.";
 
   if (msg.includes("solar"))
-    return "Solar panel & inverter available. Free consultation 👉 https://wa.me/919548021272";
+    return "Solar panel & inverter available. Free consultation.";
 
   if (msg.includes("inverter"))
     return "1100VA inverter available from ₹6,500.";
@@ -273,3 +278,78 @@ function getBotReply(msg) {
 
   return "Madad ke liye WhatsApp kare 👉 https://wa.me/919548021272";
 }
+
+/*********************
+  DESIGN EDIT MODE
+*********************/
+function loadDesign() {
+  const design = JSON.parse(localStorage.getItem("designSettings")) || {};
+  for (let key in design) {
+    if (key !== "--hero-bg") {
+      document.documentElement.style.setProperty(key, design[key]);
+    }
+  }
+}
+
+function saveDesign(key, value) {
+  let design = JSON.parse(localStorage.getItem("designSettings")) || {};
+  design[key] = value;
+  localStorage.setItem("designSettings", JSON.stringify(design));
+}
+
+function enableDesignEditor() {
+  if (document.getElementById("designEditor")) return;
+
+  let panel = document.createElement("div");
+  panel.className = "admin-bar";
+  panel.id = "designEditor";
+
+  panel.innerHTML = `
+    <h3>🎨 Design Editor</h3>
+    <label>Primary Color</label>
+    <input type="color" onchange="updateColor('--primary-color',this.value)">
+    <label>Background Color</label>
+    <input type="color" onchange="updateColor('--bg-dark',this.value)">
+    <label>Chat Color 1</label>
+    <input type="color" onchange="updateColor('--chat-gradient-1',this.value)">
+    <label>Chat Color 2</label>
+    <input type="color" onchange="updateColor('--chat-gradient-2',this.value)">
+    <br><br>
+    <label>Hero Background</label>
+    <input type="file" accept="image/*" onchange="uploadHeroBg(this)">
+    <br><br>
+    <button onclick="resetDesign()">Reset Design</button>
+  `;
+
+  document.body.insertBefore(panel, document.body.firstChild);
+}
+
+function updateColor(variable, value) {
+  document.documentElement.style.setProperty(variable, value);
+  saveDesign(variable, value);
+}
+
+function uploadHeroBg(input) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    document.querySelector(".hero").style.backgroundImage =
+      `url('${reader.result}')`;
+    saveDesign("--hero-bg", `url('${reader.result}')`);
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+function applyHeroBg() {
+  const design = JSON.parse(localStorage.getItem("designSettings")) || {};
+  if (design["--hero-bg"]) {
+    document.querySelector(".hero").style.backgroundImage = design["--hero-bg"];
+  }
+}
+
+function resetDesign() {
+  localStorage.removeItem("designSettings");
+  location.reload();
+}
+
+loadDesign();
+applyHeroBg();
