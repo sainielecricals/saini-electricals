@@ -35,20 +35,20 @@ function renderProducts() {
   container.innerHTML = "";
 
   for (let category in data) {
-    let section = document.createElement("div");
+    const section = document.createElement("div");
     section.className = "category";
 
     section.innerHTML = `
-      <h2 class="cat-title" data-cat="${category}">${category}</h2>
+      <h2 class="cat-title">${category}</h2>
       <div class="products"></div>
     `;
 
     container.appendChild(section);
-    let box = section.querySelector(".products");
+    const box = section.querySelector(".products");
 
     data[category].forEach((product, index) => {
-      let image = product.image || "https://via.placeholder.com/250";
-      let card = document.createElement("div");
+      const image = product.image || "https://via.placeholder.com/250";
+      const card = document.createElement("div");
       card.className = "card";
 
       card.innerHTML = `
@@ -56,8 +56,11 @@ function renderProducts() {
         <input type="file" class="img-input hidden">
         <h3>${product.name}</h3>
         <p class="price">₹ <span>${product.price}</span></p>
-        <button onclick="orderProduct('${category}',${index})">Order</button>
-        <button class="delete-btn hidden" onclick="deleteProduct('${category}',${index})">Delete</button>
+        <button onclick="orderProduct('${category}', ${index})">Order</button>
+        <button class="delete-btn hidden"
+          onclick="deleteProduct('${category}', ${index})">
+          Delete
+        </button>
       `;
 
       box.appendChild(card);
@@ -72,16 +75,17 @@ createFilters();
   PRODUCT ACTIONS
 *********************/
 function orderProduct(category, index) {
-  let product = data[category][index];
-  let msg = `I want details about ${product.name} - Price ₹${product.price}`;
-  window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`);
+  const product = data[category][index];
+  const msg = `I want details about ${product.name} - Price ₹${product.price}`;
+  window.open(
+    `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`
+  );
 }
 
 function deleteProduct(category, index) {
   data[category].splice(index, 1);
   saveData();
   renderProducts();
-  createFilters();
   enableEditMode();
 }
 
@@ -89,15 +93,17 @@ function deleteProduct(category, index) {
   FILTER & SEARCH
 *********************/
 function scrollToProducts() {
-  document.getElementById("products").scrollIntoView({ behavior: "smooth" });
+  document
+    .getElementById("products")
+    .scrollIntoView({ behavior: "smooth" });
 }
 
 function createFilters() {
-  let filterBar = document.getElementById("filterBar");
+  const filterBar = document.getElementById("filterBar");
   filterBar.innerHTML = `<button onclick="showAll()">All</button>`;
 
   for (let category in data) {
-    let btn = document.createElement("button");
+    const btn = document.createElement("button");
     btn.innerText = category;
     btn.onclick = () => filterCategory(category);
     filterBar.appendChild(btn);
@@ -107,18 +113,25 @@ function createFilters() {
 function filterCategory(category) {
   document.querySelectorAll(".category").forEach(sec => {
     sec.style.display =
-      sec.querySelector(".cat-title").innerText === category ? "block" : "none";
+      sec.querySelector("h2").innerText === category
+        ? "block"
+        : "none";
   });
 }
 
 function showAll() {
-  document.querySelectorAll(".category").forEach(sec => (sec.style.display = "block"));
+  document
+    .querySelectorAll(".category")
+    .forEach(sec => (sec.style.display = "block"));
 }
 
 function searchProducts() {
-  let input = document.getElementById("searchInput").value.toLowerCase();
+  const input = document
+    .getElementById("searchInput")
+    .value.toLowerCase();
+
   document.querySelectorAll(".card").forEach(card => {
-    let name = card.querySelector("h3").innerText.toLowerCase();
+    const name = card.querySelector("h3").innerText.toLowerCase();
     card.style.display = name.includes(input) ? "block" : "none";
   });
 }
@@ -129,25 +142,25 @@ function searchProducts() {
 const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.get("edit") === password) {
   enableEditMode();
-  enableDesignEditor();
+  enableBgEditor();
 }
-
 function enableEditMode() {
-  if (document.querySelector(".admin-bar")) return;
-
   alert("Edit Mode Activated");
 
-  // Category rename
+  /* CATEGORY RENAME */
   document.querySelectorAll(".cat-title").forEach(title => {
-    const oldName = title.innerText;
+    title.dataset.old = title.innerText;
     title.contentEditable = true;
 
     title.addEventListener("blur", () => {
+      const oldName = title.dataset.old;
       const newName = title.innerText.trim();
-      if (!newName || newName === oldName) return;
+
+      if (!oldName || oldName === newName) return;
 
       data[newName] = data[oldName];
       delete data[oldName];
+
       saveData();
       renderProducts();
       createFilters();
@@ -155,11 +168,11 @@ function enableEditMode() {
     });
   });
 
-  // Admin bar
-  let adminBar = document.createElement("div");
+  /* ADMIN BAR */
+  const adminBar = document.createElement("div");
   adminBar.className = "admin-bar";
 
-  let options = Object.keys(data)
+  const options = Object.keys(data)
     .map(cat => `<option value="${cat}">${cat}</option>`)
     .join("");
 
@@ -172,11 +185,13 @@ function enableEditMode() {
 
   document.body.insertBefore(adminBar, container);
 
-  // Editable price
+  /* EDIT PRICE */
   document.querySelectorAll(".price span").forEach(span => {
     span.contentEditable = true;
+
     span.addEventListener("blur", () => {
-      let name = span.closest(".card").querySelector("h3").innerText;
+      const name = span.closest(".card").querySelector("h3").innerText;
+
       for (let cat in data) {
         data[cat].forEach(p => {
           if (p.name === name) p.price = span.innerText;
@@ -186,15 +201,17 @@ function enableEditMode() {
     });
   });
 
-  // Image upload
+  /* IMAGE UPLOAD */
   document.querySelectorAll(".img-input").forEach(input => {
     input.classList.remove("hidden");
+
     input.addEventListener("change", function () {
       const reader = new FileReader();
       reader.onload = () => {
-        let card = input.parentElement;
+        const card = input.parentElement;
         card.querySelector("img").src = reader.result;
-        let name = card.querySelector("h3").innerText;
+
+        const name = card.querySelector("h3").innerText;
         for (let cat in data) {
           data[cat].forEach(p => {
             if (p.name === name) p.image = reader.result;
@@ -206,15 +223,15 @@ function enableEditMode() {
     });
   });
 
-  document.querySelectorAll(".delete-btn").forEach(btn =>
-    btn.classList.remove("hidden")
-  );
+  document
+    .querySelectorAll(".delete-btn")
+    .forEach(btn => btn.classList.remove("hidden"));
 }
 
 function addProduct() {
-  let cat = document.getElementById("newCategory").value;
-  let name = document.getElementById("newName").value;
-  let price = document.getElementById("newPrice").value;
+  const cat = document.getElementById("newCategory").value;
+  const name = document.getElementById("newName").value;
+  const price = document.getElementById("newPrice").value;
 
   if (name && price) {
     data[cat].push({ name, price });
@@ -237,22 +254,22 @@ function handleKey(e) {
 }
 
 function sendMessage() {
-  let input = document.getElementById("userInput");
-  let msg = input.value.trim();
+  const input = document.getElementById("userInput");
+  const msg = input.value.trim();
   if (!msg) return;
 
-  addChat(msg, "user-message");
+  addChat(msg, "user");
   input.value = "";
 
   setTimeout(() => {
-    addChat(getBotReply(msg), "bot-message");
+    addChat(getBotReply(msg), "bot");
   }, 600);
 }
 
-function addChat(text, cls) {
-  let chat = document.getElementById("chatMessages");
-  let div = document.createElement("div");
-  div.className = cls;
+function addChat(text, type) {
+  const chat = document.getElementById("chatMessages");
+  const div = document.createElement("div");
+  div.className = type;
   div.innerText = text;
   chat.appendChild(div);
   chat.scrollTop = chat.scrollHeight;
@@ -278,78 +295,72 @@ function getBotReply(msg) {
 
   return "Madad ke liye WhatsApp kare 👉 https://wa.me/919548021272";
 }
-
 /*********************
-  DESIGN EDIT MODE
+  BACKGROUND EDITOR (EDIT MODE ONLY)
 *********************/
-function loadDesign() {
-  const design = JSON.parse(localStorage.getItem("designSettings")) || {};
-  for (let key in design) {
-    if (key !== "--hero-bg") {
-      document.documentElement.style.setProperty(key, design[key]);
-    }
-  }
-}
+function enableBgEditor() {
+  if (document.getElementById("bgEditor")) return;
 
-function saveDesign(key, value) {
-  let design = JSON.parse(localStorage.getItem("designSettings")) || {};
-  design[key] = value;
-  localStorage.setItem("designSettings", JSON.stringify(design));
-}
+  const bar = document.createElement("div");
+  bar.className = "admin-bar";
+  bar.id = "bgEditor";
 
-function enableDesignEditor() {
-  if (document.getElementById("designEditor")) return;
+  bar.innerHTML = `
+    <h3>🎨 Background Editor</h3>
 
-  let panel = document.createElement("div");
-  panel.className = "admin-bar";
-  panel.id = "designEditor";
+    <label>Background Color</label><br>
+    <input type="color" onchange="setBgColor(this.value)">
 
-  panel.innerHTML = `
-    <h3>🎨 Design Editor</h3>
-    <label>Primary Color</label>
-    <input type="color" onchange="updateColor('--primary-color',this.value)">
-    <label>Background Color</label>
-    <input type="color" onchange="updateColor('--bg-dark',this.value)">
-    <label>Chat Color 1</label>
-    <input type="color" onchange="updateColor('--chat-gradient-1',this.value)">
-    <label>Chat Color 2</label>
-    <input type="color" onchange="updateColor('--chat-gradient-2',this.value)">
     <br><br>
-    <label>Hero Background</label>
-    <input type="file" accept="image/*" onchange="uploadHeroBg(this)">
+
+    <label>Background Image</label><br>
+    <input type="file" accept="image/*" onchange="setBgImage(this)">
+
     <br><br>
-    <button onclick="resetDesign()">Reset Design</button>
+    <button onclick="resetBg()">Reset Background</button>
   `;
 
-  document.body.insertBefore(panel, document.body.firstChild);
+  document.body.insertBefore(bar, document.body.firstChild);
 }
 
-function updateColor(variable, value) {
-  document.documentElement.style.setProperty(variable, value);
-  saveDesign(variable, value);
+function setBgColor(color) {
+  document.body.style.backgroundColor = color;
+  document.body.style.backgroundImage = "none";
+  localStorage.setItem("bgColor", color);
 }
 
-function uploadHeroBg(input) {
+function setBgImage(input) {
+  const file = input.files[0];
+  if (!file) return;
+
   const reader = new FileReader();
   reader.onload = () => {
-    document.querySelector(".hero").style.backgroundImage =
-      `url('${reader.result}')`;
-    saveDesign("--hero-bg", `url('${reader.result}')`);
+    document.body.style.backgroundImage = `url('${reader.result}')`;
+    document.body.style.backgroundSize = "cover";
+    document.body.style.backgroundPosition = "center";
+    localStorage.setItem("bgImage", reader.result);
   };
-  reader.readAsDataURL(input.files[0]);
+  reader.readAsDataURL(file);
 }
 
-function applyHeroBg() {
-  const design = JSON.parse(localStorage.getItem("designSettings")) || {};
-  if (design["--hero-bg"]) {
-    document.querySelector(".hero").style.backgroundImage = design["--hero-bg"];
+function loadBg() {
+  const color = localStorage.getItem("bgColor");
+  const img = localStorage.getItem("bgImage");
+
+  if (img) {
+    document.body.style.backgroundImage = `url('${img}')`;
+    document.body.style.backgroundSize = "cover";
+    document.body.style.backgroundPosition = "center";
+  } else if (color) {
+    document.body.style.backgroundColor = color;
   }
 }
 
-function resetDesign() {
-  localStorage.removeItem("designSettings");
-  location.reload();
+function resetBg() {
+  localStorage.removeItem("bgColor");
+  localStorage.removeItem("bgImage");
+  document.body.style.backgroundColor = "";
+  document.body.style.backgroundImage = "";
 }
 
-loadDesign();
-applyHeroBg();
+loadBg();
