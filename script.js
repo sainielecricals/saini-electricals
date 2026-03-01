@@ -282,4 +282,32 @@ function getBotReply(message) {
         return "Please tell product name for exact price.";
 
     return "For more details please click WhatsApp below 👇";
+
+}
+function toggleChat() {
+  document.getElementById("chatBox").classList.toggle("hidden");
+}
+
+function handleKey(e) {
+  if (e.key === "Enter") sendMessage();
+}
+
+function sendMessage() {
+  let input = document.getElementById("userInput");
+  let msg = input.value.trim();
+  if (!msg) return;
+
+  addMessage(msg, "user");
+  input.value = "";
+
+  setTimeout(() => {
+    addMessage("Please contact us on WhatsApp 👉 919548021272", "bot");
+  }, 500);
+}
+
+function addMessage(text, type) {
+  let box = document.getElementById("chatMessages");
+  let div = document.createElement("div");
+  div.innerText = text;
+  box.appendChild(div);
 }
