@@ -272,7 +272,22 @@ function getBotReply(msg) {
   if (msg.includes("price")) return "Product ka naam bataye.";
  return "📲 Talk to us directly on WhatsApp:\nhttps://wa.me/919548021272";
 }
+(function chatbotWelcome(){
+  const chat = document.getElementById("chatMessages");
+  if (!chat || chat.children.length) return;
 
+  const welcome = document.createElement("div");
+  welcome.className = "bot-message";
+  welcome.innerHTML = `
+    👋 <b>Welcome to Saini Electricals!</b><br>
+    How can I help you today?<br><br>
+    👉 <a href="https://wa.me/919548021272" target="_blank"
+      style="color:#fff;text-decoration:underline;font-weight:bold;">
+      Chat directly on WhatsApp
+    </a>
+  `;
+  chat.appendChild(welcome);
+})();
 /*********************
   BACKGROUND EDITOR
 *********************/
@@ -378,4 +393,5 @@ function resetHeroBg() {
     hero.style.backgroundPosition = "center";
   }
 })();
+
 
