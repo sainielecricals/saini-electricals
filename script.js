@@ -1,96 +1,84 @@
-const password = "dhairya123";
-const whatsapp = "919548021272";
+const password="dhairya123";
+const whatsapp="919548021272";
 
-/* INIT DATA */
-let data = JSON.parse(localStorage.getItem("sainiData"));
-if(!data){
-  data = {
-    "☀️ Solar Section":[
-      {name:"Solar Panel 550W",price:28000},
-      {name:"Solar Inverter 5KW",price:45000}
-    ],
-    "⚡ Power Backup":[
-      {name:"Inverter 1100VA",price:6500}
-    ],
-    "❄️ Cooling & Air":[
-      {name:"Blue Star 1.5 Ton AC",price:36500}
-    ]
-  };
-  saveData();
-}
+/* DATA */
+let data=JSON.parse(localStorage.getItem("sainiData"))||{
+  Solar:[{name:"Solar Panel 550W",price:28000}],
+  Inverter:[{name:"Inverter 1100VA",price:6500}]
+};
+save();
 
-function saveData(){
-  localStorage.setItem("sainiData",JSON.stringify(data));
-}
+function save(){localStorage.setItem("sainiData",JSON.stringify(data));}
 
 /* RENDER */
-const container=document.getElementById("products");
-
+const products=document.getElementById("products");
 function render(){
-  container.innerHTML="";
-  for(let cat in data){
-    const sec=document.createElement("div");
-    sec.innerHTML=`<h2>${cat}</h2><div class="products"></div>`;
-    const box=sec.querySelector(".products");
-    data[cat].forEach((p,i)=>{
-      const c=document.createElement("div");
-      c.className="card";
-      c.innerHTML=`
-        <img src="${p.image||'https://via.placeholder.com/250'}">
-        <h3>${p.name}</h3>
-        <div class="price">₹${p.price}</div>
-        <button onclick="order('${p.name}',${p.price})">Order</button>
-      `;
-      box.appendChild(c);
-    });
-    container.appendChild(sec);
-  }
-}
-render(); createFilters();
-
-/* FILTER */
-function createFilters(){
-  const f=document.getElementById("filterBar");
-  f.innerHTML='<button onclick="render()">All</button>';
+  products.innerHTML="";
   for(let c in data){
-    const b=document.createElement("button");
-    b.innerText=c;
-    b.onclick=()=>filter(c);
-    f.appendChild(b);
+    const sec=document.createElement("div");
+    sec.innerHTML=`<h2>${c}</h2>`;
+    data[c].forEach((p,i)=>{
+      sec.innerHTML+=`
+      <div>
+        ${p.name} – ₹${p.price}
+        <button onclick="order('${c}',${i})">Order</button>
+        <button onclick="del('${c}',${i})">Delete</button>
+      </div>`;
+    });
+    products.appendChild(sec);
   }
 }
-function filter(c){
-  document.querySelectorAll("#products > div").forEach(s=>{
-    s.style.display=s.querySelector("h2").innerText===c?"block":"none";
-  });
+render();
+
+/* ADMIN MODE */
+if(new URLSearchParams(location.search).get("edit")===password){
+  adminRoot.innerHTML=`
+  <div class="admin-bar">
+    <input id="cat" placeholder="Category">
+    <button onclick="addCat()">Add Category</button><br>
+    <select id="sel"></select>
+    <input id="name" placeholder="Product">
+    <input id="price" placeholder="Price">
+    <button onclick="addProd()">Add Product</button>
+  </div>`;
+  updateSel();
 }
 
-/* ORDER */
-function order(n,p){
-  window.open(`https://wa.me/${whatsapp}?text=${encodeURIComponent(n+" ₹"+p)}`);
+function updateSel(){
+  sel.innerHTML="";
+  for(let c in data)sel.innerHTML+=`<option>${c}</option>`;
+}
+function addCat(){
+  if(!cat.value)return;
+  if(!data[cat.value]){data[cat.value]=[];save();render();updateSel();}
+}
+function addProd(){
+  data[sel.value].push({name:name.value,price:price.value});
+  save();render();
+}
+
+/* ACTIONS */
+function del(c,i){data[c].splice(i,1);save();render();}
+function order(c,i){
+  window.open(`https://wa.me/${whatsapp}?text=${data[c][i].name}`);
 }
 
 /* CHAT */
-function toggleChat(){
-  document.getElementById("chatBox").classList.toggle("hidden");
-}
-function sendMessage(){
-  const i=document.getElementById("userInput");
-  if(!i.value)return;
-  addChat(i.value,"user");
-  setTimeout(()=>addChat("Product details ke liye WhatsApp kare 📲","bot"),500);
-  i.value="";
-}
-function addChat(t,type){
-  const d=document.createElement("div");
-  d.className=type+"-message";
-  d.innerHTML=t;
-  chatMessages.appendChild(d);
+chatToggle.onclick=()=>chatBox.classList.toggle("hidden");
+chatClose.onclick=()=>chatBox.classList.add("hidden");
+sendBtn.onclick=send;
+voiceBtn.onclick=startVoice;
+
+function send(){
+  if(!userInput.value)return;
+  chatMessages.innerHTML+=`<div class="user">${userInput.value}</div>`;
+  chatMessages.innerHTML+=`<div class="bot">WhatsApp kare 👉 ${whatsapp}</div>`;
+  userInput.value="";
 }
 
 /* VOICE */
 function startVoice(){
-  if(!("webkitSpeechRecognition"in window))return;
+  if(!("webkitSpeechRecognition"in window))return alert("Chrome use karo");
   const r=new webkitSpeechRecognition();
   r.lang="en-IN";
   r.onresult=e=>userInput.value=e.results[0][0].transcript;
