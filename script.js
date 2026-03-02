@@ -132,6 +132,7 @@ const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.get("edit") === password) {
   enableEditMode();
   enableBgEditor();
+  enableHeroBgEditor(); // ✅ NEW
 }
 
 function enableEditMode() {
@@ -230,9 +231,16 @@ function addProduct() {
   CHATBOT
 *********************/
 function toggleChat() {
-  document.getElementById("chatBox").classList.toggle("hidden");
-}
+  const box = document.getElementById("chatBox");
+  box.classList.toggle("hidden");
 
+  if (!box.classList.contains("hidden")) {
+    const chat = document.getElementById("chatMessages");
+    if (chat.children.length === 0) {
+      addChat("👋 Welcome to Saini Electricals!\nHow can I help you today?", "bot");
+    }
+  }
+}
 function handleKey(e) {
   if (e.key === "Enter") sendMessage();
 }
@@ -262,7 +270,7 @@ function getBotReply(msg) {
   if (msg.includes("inverter")) return "1100VA inverter from ₹6,500.";
   if (msg.includes("delivery")) return "Yes, same day delivery in Roorkee.";
   if (msg.includes("price")) return "Product ka naam bataye.";
-  return "WhatsApp kare 👉 https://wa.me/919548021272";
+ return "📲 Talk to us directly on WhatsApp:\nhttps://wa.me/919548021272";
 }
 
 /*********************
@@ -320,3 +328,54 @@ function resetBg() {
     document.body.style.backgroundColor = color;
   }
 })();
+/*********************
+ HERO BACKGROUND EDIT (EDIT MODE ONLY)
+*********************/
+function enableHeroBgEditor() {
+  if (document.getElementById("heroBgEditor")) return;
+
+  const bar = document.createElement("div");
+  bar.className = "admin-bar";
+  bar.id = "heroBgEditor";
+
+  bar.innerHTML = `
+    <h3>🖼️ Hero Background</h3>
+    <input type="file" accept="image/*" onchange="setHeroBg(this)">
+    <button onclick="resetHeroBg()">Reset Hero Background</button>
+  `;
+
+  document.body.insertBefore(bar, document.body.firstChild);
+}
+
+function setHeroBg(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    const hero = document.querySelector(".hero");
+    hero.style.backgroundImage = `url('${reader.result}')`;
+    hero.style.backgroundSize = "cover";
+    hero.style.backgroundPosition = "center";
+    localStorage.setItem("heroBg", reader.result);
+  };
+  reader.readAsDataURL(file);
+}
+
+function resetHeroBg() {
+  localStorage.removeItem("heroBg");
+  const hero = document.querySelector(".hero");
+  hero.style.backgroundImage =
+    "linear-gradient(135deg, var(--primary-color), #111)";
+}
+
+(function loadHeroBg(){
+  const bg = localStorage.getItem("heroBg");
+  if (bg) {
+    const hero = document.querySelector(".hero");
+    hero.style.backgroundImage = `url('${bg}')`;
+    hero.style.backgroundSize = "cover";
+    hero.style.backgroundPosition = "center";
+  }
+})();
+
