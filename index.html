@@ -7,33 +7,27 @@
 </head>
 <body>
 
-<!-- FLOATING CHAT OPEN -->
-<div id="chatToggle">💬</div>
+<div id="chatButton" onclick="toggleChat()">💬</div>
 
-<!-- CHAT BOX -->
 <div id="chatBox" class="hidden">
   <div class="chat-header">
     Saini Electricals Assistant
-    <span id="chatClose">✖</span>
+    <span onclick="toggleChat()">✖</span>
   </div>
-
   <div id="chatMessages" class="chat-messages"></div>
 
   <div class="chat-input">
     <input id="userInput" placeholder="Ask something...">
-    <button id="voiceBtn">🎤</button>
-    <button id="sendBtn">➤</button>
+    <button onclick="sendMessage()">Send</button>
   </div>
 </div>
 
 <header class="hero">
   <h1>⚡ SAINI ELECTRICALS – ROORKEE</h1>
-  <p>Lighting • Solar • Fans • AC • Inverter • Home Appliances</p>
+  <p>Lighting • Solar • AC • Inverter • Home Appliances</p>
 </header>
 
-<div id="adminRoot"></div>
-
-<div class="filter-bar" id="filterBar"></div>
+<div id="admin"></div>
 <div id="products"></div>
 
 <script src="script.js"></script>
