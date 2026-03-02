@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Saini Electricals – Roorkee</title>
-  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<!-- CHAT FLOAT BUTTON -->
+<!-- CHAT BUTTON -->
 <div id="chatButton" onclick="toggleChat()">💬</div>
 
 <!-- CHAT BOX -->
@@ -22,42 +21,28 @@
   <div id="chatMessages" class="chat-messages"></div>
 
   <div class="chat-input">
-    <input type="text" id="userInput" placeholder="Ask something..."/>
+    <input type="text" id="userInput" placeholder="Ask something..."
+      onkeypress="if(event.key==='Enter')sendMessage()">
     <button id="voiceBtn" onclick="startVoice()">🎤</button>
-    <button onclick="sendMessage()">Send</button>
+    <button id="sendBtn" onclick="sendMessage()">➤</button>
   </div>
 </div>
 
 <header class="hero">
   <h1>⚡ SAINI ELECTRICALS – ROORKEE</h1>
   <p>Lighting • Solar • Fans • AC • Inverter • Home Appliances</p>
-
-  <div class="buttons">
-    <button onclick="scrollToProducts()">Shop Now</button>
-    <a href="https://wa.me/919548021272" target="_blank">
-      <button class="whatsapp">Order on WhatsApp</button>
-    </a>
-  </div>
 </header>
 
-<section class="highlight">
-  ✔ Same Day Delivery in Roorkee |
-  ✔ AC & Solar Installation |
-  ✔ Bulk Discount |
-  ✔ Free Consultation |
-  ✔ Best Price Guarantee
-</section>
-
 <div class="search-bar">
-  <input type="text" id="searchInput" placeholder="Search products..." onkeyup="searchProducts()"/>
+  <input type="text" id="searchInput" placeholder="Search products..." onkeyup="searchProducts()">
 </div>
 
 <div class="filter-bar" id="filterBar"></div>
 <div id="products"></div>
 
 <footer>
-  📍 Roorkee | 📞 +91 95480 21272  
-  <br/>© 2026 Saini Electricals
+  📍 Roorkee | 📞 9548021272 <br>
+  © 2026 Saini Electricals
 </footer>
 
 <script src="script.js"></script>
