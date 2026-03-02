@@ -15,8 +15,8 @@
   <!-- CHAT BOX -->
   <div id="chatBox" class="hidden">
     <div class="chat-header">
-      Saini Electricals Assistant
-      <span onclick="toggleChat()">✖</span>
+      <span class="chat-title">Saini Electricals Assistant</span>
+      <span class="chat-close" onclick="toggleChat()">✖</span>
     </div>
 
     <div id="chatMessages" class="chat-messages"></div>
@@ -25,7 +25,7 @@
       <input
         type="text"
         id="userInput"
-        placeholder="Ask something..."
+        placeholder="Type your query here…"
         onkeypress="handleKey(event)">
       <button onclick="sendMessage()">Send</button>
     </div>
@@ -39,25 +39,36 @@
 
   <!-- HERO SECTION -->
   <header class="hero">
-    <h1>🏪 SAINI ELECTRICALS – ROORKEE</h1>
-    <p>Lighting • Solar • Fans • AC • Inverter • Home Appliances</p>
+    <h1 class="hero-title">
+      <span class="hero-icon">⚡</span>
+      SAINI ELECTRICALS
+      <span class="hero-location">– ROORKEE</span>
+    </h1>
+
+    <p class="hero-subtitle">
+      Lighting • Solar • Fans • AC • Inverter • Home Appliances
+    </p>
 
     <div class="buttons">
-      <button onclick="scrollToProducts()">Shop Now</button>
+      <button class="btn-primary" onclick="scrollToProducts()">
+        🛒 Shop Now
+      </button>
 
       <a href="https://wa.me/919548021272" target="_blank">
-        <button class="whatsapp">Order on WhatsApp</button>
+        <button class="btn-whatsapp">
+          📲 Order on WhatsApp
+        </button>
       </a>
     </div>
   </header>
 
   <!-- HIGHLIGHT SECTION -->
   <section class="highlight">
-    ✔ Same Day Delivery in Roorkee |
-    ✔ AC & Solar Installation |
-    ✔ Bulk Discount Available |
-    ✔ Free Consultation |
-    ✔ Best Price Guarantee
+    <span>✔ Same Day Delivery in Roorkee</span>
+    <span>✔ AC & Solar Installation</span>
+    <span>✔ Bulk Discount Available</span>
+    <span>✔ Free Consultation</span>
+    <span>✔ Best Price Guarantee</span>
   </section>
 
   <!-- SEARCH -->
@@ -65,7 +76,7 @@
     <input
       type="text"
       id="searchInput"
-      placeholder="Search products..."
+      placeholder="🔍 Search electrical products…"
       onkeyup="searchProducts()">
   </div>
 
@@ -76,13 +87,19 @@
   <div id="products"></div>
 
   <!-- FOOTER -->
-  <footer>
-    📍 Roorkee | 📞 9548021272  
-    © 2026 Saini Electricals
+  <footer class="site-footer">
+    <div class="footer-line">
+      📍 Roorkee &nbsp; | &nbsp; 📞 +91 95480 21272
+    </div>
+    <div class="footer-copy">
+      © 2026 <strong>Saini Electricals</strong> • All Rights Reserved
+    </div>
   </footer>
 
   <!-- FLOATING WHATSAPP -->
-  <a href="https://wa.me/919548021272" target="_blank" class="floating-whatsapp">💬</a>
+  <a href="https://wa.me/919548021272" target="_blank" class="floating-whatsapp">
+    💬
+  </a>
 
   <script src="script.js"></script>
 </body>
