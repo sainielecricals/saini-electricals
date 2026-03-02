@@ -1,157 +1,98 @@
 const password = "dhairya123";
 const whatsapp = "919548021272";
 
-/* ===== DATA INIT ===== */
+/* INIT DATA */
 let data = JSON.parse(localStorage.getItem("sainiData"));
-if (!data) {
+if(!data){
   data = {
-    "Solar": [{
-      name:"Solar Panel 550W",
-      price:28000,
-      specs:"",
-      usage:"",
-      reviews:"",
-      warranty:""
-    }]
+    "☀️ Solar Section":[
+      {name:"Solar Panel 550W",price:28000},
+      {name:"Solar Inverter 5KW",price:45000}
+    ],
+    "⚡ Power Backup":[
+      {name:"Inverter 1100VA",price:6500}
+    ],
+    "❄️ Cooling & Air":[
+      {name:"Blue Star 1.5 Ton AC",price:36500}
+    ]
   };
-  save();
+  saveData();
 }
 
-function save(){
+function saveData(){
   localStorage.setItem("sainiData",JSON.stringify(data));
 }
 
-/* ===== RENDER ===== */
-const products = document.getElementById("products");
+/* RENDER */
+const container=document.getElementById("products");
 
 function render(){
-  products.innerHTML="";
+  container.innerHTML="";
   for(let cat in data){
-    let sec=document.createElement("div");
-    sec.className="category";
-    sec.innerHTML=`<h2>${cat}</h2>`;
-
+    const sec=document.createElement("div");
+    sec.innerHTML=`<h2>${cat}</h2><div class="products"></div>`;
+    const box=sec.querySelector(".products");
     data[cat].forEach((p,i)=>{
-      sec.innerHTML+=`
-      <div class="card">
+      const c=document.createElement("div");
+      c.className="card";
+      c.innerHTML=`
+        <img src="${p.image||'https://via.placeholder.com/250'}">
         <h3>${p.name}</h3>
-        <p>₹ ${p.price}</p>
-
-        <button onclick="order('${cat}',${i})">Order</button>
-
-        <div class="edit hidden">
-          <textarea placeholder="Specifications">${p.specs}</textarea>
-          <textarea placeholder="Best Use">${p.usage}</textarea>
-          <textarea placeholder="Reviews">${p.reviews}</textarea>
-          <textarea placeholder="Warranty">${p.warranty}</textarea>
-          <button onclick="saveExtra('${cat}',${i},this)">Save</button>
-          <button onclick="del('${cat}',${i})">Delete</button>
-        </div>
-      </div>`;
+        <div class="price">₹${p.price}</div>
+        <button onclick="order('${p.name}',${p.price})">Order</button>
+      `;
+      box.appendChild(c);
     });
-
-    products.appendChild(sec);
+    container.appendChild(sec);
   }
 }
-render();
+render(); createFilters();
 
-/* ===== ACTIONS ===== */
-function order(c,i){
-  window.open(`https://wa.me/${whatsapp}?text=${encodeURIComponent(data[c][i].name)}`);
+/* FILTER */
+function createFilters(){
+  const f=document.getElementById("filterBar");
+  f.innerHTML='<button onclick="render()">All</button>';
+  for(let c in data){
+    const b=document.createElement("button");
+    b.innerText=c;
+    b.onclick=()=>filter(c);
+    f.appendChild(b);
+  }
 }
-
-function del(c,i){
-  data[c].splice(i,1);
-  save();render();editMode();
-}
-
-function saveExtra(c,i,btn){
-  let t=btn.parentElement.querySelectorAll("textarea");
-  data[c][i].specs=t[0].value;
-  data[c][i].usage=t[1].value;
-  data[c][i].reviews=t[2].value;
-  data[c][i].warranty=t[3].value;
-  save();
-  alert("Saved for chatbot ✅");
-}
-
-/* ===== EDIT MODE ===== */
-function editMode(){
-  document.querySelectorAll(".edit").forEach(e=>e.classList.remove("hidden"));
-}
-
-if(new URLSearchParams(location.search).get("edit")===password){
-  document.getElementById("admin").innerHTML=`
-    <input id="newCat" placeholder="Category">
-    <button onclick="addCat()">Add Category</button><br><br>
-    <select id="catSel"></select>
-    <input id="newName" placeholder="Product name">
-    <input id="newPrice" placeholder="Price">
-    <button onclick="addProd()">Add Product</button>
-  `;
-  updateSel();
-  editMode();
-}
-
-function updateSel(){
-  catSel.innerHTML="";
-  for(let c in data) catSel.innerHTML+=`<option>${c}</option>`;
-}
-
-function addCat(){
-  if(!newCat.value) return;
-  data[newCat.value]=[];
-  save();render();updateSel();
-}
-
-function addProd(){
-  data[catSel.value].push({
-    name:newName.value,
-    price:newPrice.value,
-    specs:"",
-    usage:"",
-    reviews:"",
-    warranty:""
+function filter(c){
+  document.querySelectorAll("#products > div").forEach(s=>{
+    s.style.display=s.querySelector("h2").innerText===c?"block":"none";
   });
-  save();render();editMode();
 }
 
-/* ===== CHAT ===== */
+/* ORDER */
+function order(n,p){
+  window.open(`https://wa.me/${whatsapp}?text=${encodeURIComponent(n+" ₹"+p)}`);
+}
+
+/* CHAT */
 function toggleChat(){
-  chatBox.classList.toggle("hidden");
+  document.getElementById("chatBox").classList.toggle("hidden");
 }
-
 function sendMessage(){
-  if(!userInput.value) return;
-  addChat(userInput.value,"user");
-
-  setTimeout(()=>{
-    addChat(botReply(userInput.value),"bot");
-  },400);
-
-  userInput.value="";
+  const i=document.getElementById("userInput");
+  if(!i.value)return;
+  addChat(i.value,"user");
+  setTimeout(()=>addChat("Product details ke liye WhatsApp kare 📲","bot"),500);
+  i.value="";
 }
-
 function addChat(t,type){
-  let d=document.createElement("div");
-  d.className=type==="user"?"user-message":"bot-message";
+  const d=document.createElement("div");
+  d.className=type+"-message";
   d.innerHTML=t;
   chatMessages.appendChild(d);
 }
 
-function botReply(msg){
-  msg=msg.toLowerCase();
-  for(let c in data){
-    for(let p of data[c]){
-      if(msg.includes(p.name.toLowerCase())){
-        return `<b>${p.name}</b><br>
-₹${p.price}<br>
-${p.specs}<br>
-${p.usage}<br>
-${p.reviews}<br>
-Warranty: ${p.warranty}`;
-      }
-    }
-  }
-  return "Product ka naam likhiye 😊";
+/* VOICE */
+function startVoice(){
+  if(!("webkitSpeechRecognition"in window))return;
+  const r=new webkitSpeechRecognition();
+  r.lang="en-IN";
+  r.onresult=e=>userInput.value=e.results[0][0].transcript;
+  r.start();
 }
