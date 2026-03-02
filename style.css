@@ -44,3 +44,63 @@ body{margin:0;background:#0f0f0f;color:#fff;font-family:Arial}
 /* ADMIN */
 .admin-bar{background:#222;padding:10px;text-align:center}
 .admin-bar input,select,button{margin:5px;padding:6px}
+/* =====================
+   PRODUCT CARD LAYOUT
+===================== */
+
+.category{
+  padding: 20px 40px;
+}
+
+.category h2{
+  margin: 20px 0;
+  color:#ffb000;
+}
+
+.product-grid{
+  display:flex;
+  flex-wrap:wrap;
+  gap:20px;
+}
+
+.product-card{
+  background:#1b1b1b;
+  width:260px;
+  padding:16px;
+  border-radius:14px;
+  box-shadow:0 0 15px rgba(255,122,0,.25);
+  transition:.3s;
+}
+
+.product-card:hover{
+  transform:translateY(-5px);
+  box-shadow:0 0 25px rgba(255,122,0,.45);
+}
+
+.product-card h3{
+  margin:0 0 6px;
+}
+
+.product-card .price{
+  font-size:18px;
+  margin-bottom:8px;
+}
+
+.product-card button{
+  margin:4px 4px 4px 0;
+  padding:6px 10px;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+.product-card textarea{
+  width:100%;
+  margin-top:6px;
+  background:#111;
+  color:#fff;
+  border:1px solid #333;
+  border-radius:6px;
+  padding:6px;
+  font-size:13px;
+}
