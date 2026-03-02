@@ -22,8 +22,10 @@
     <div id="chatMessages" class="chat-messages"></div>
 
     <div class="chat-input">
-      <button onclick="startVoice()">🎤</button>
-      <div id="chatSuggestions" class="chat-suggestions hidden"></div>
+      <input id="userInput" placeholder="Ask something...">
+      <button id="voiceBtn" onclick="startVoice()">🎤</button>
+      <button onclick="sendMessage()">Send</button>
+  </div>
       <input
         type="text"
         id="userInput"
@@ -106,5 +108,6 @@
   <script src="script.js"></script>
 </body>
 </html>
+
 
 
