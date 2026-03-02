@@ -1,62 +1,72 @@
-body{margin:0;background:#0f0f0f;color:#fff;font-family:Arial}
-
-.hero{text-align:center;padding:60px;background:linear-gradient(135deg,#ff7a00,#111)}
-
-#chatToggle{
-  position:fixed;bottom:20px;right:20px;
-  background:#ff00cc;padding:14px;border-radius:50%;
-  cursor:pointer;z-index:9999;
+body{
+  margin:0;
+  font-family:Arial;
+  background:#0f0f0f;
+  color:#fff;
 }
 
-#chatBox{
-  position:fixed;bottom:80px;right:20px;
-  width:320px;height:450px;
-  background:#000;border-radius:18px;
-  display:flex;flex-direction:column;
-  transition:.3s;z-index:9999;
-}
-#chatBox.hidden{opacity:0;pointer-events:none;transform:scale(.9)}
-
-.chat-header{
-  padding:12px;
-  background:linear-gradient(90deg,#ff00cc,#4f46ff);
-  display:flex;justify-content:space-between;
+.hero{
+  text-align:center;
+  padding:50px;
+  background:linear-gradient(135deg,#ff7a00,#111);
 }
 
-.chat-messages{flex:1;padding:10px;overflow-y:auto}
-
-.user{background:#4f46ff;padding:8px;border-radius:12px;margin:6px 0;text-align:right}
-.bot{background:#ff00cc;padding:8px;border-radius:12px;margin:6px 0}
-
-.chat-input{
-  display:flex;gap:8px;padding:10px;
+.category{padding:20px}
+.card{
+  background:#1b1b1b;
+  padding:15px;
+  margin:10px;
+  border-radius:10px;
+  width:260px;
+  display:inline-block;
+  vertical-align:top;
 }
-.chat-input input{
-  flex:1;padding:10px;border-radius:20px;border:none
-}
-#voiceBtn,#sendBtn{
-  width:42px;height:42px;border-radius:50%;
-  border:none;cursor:pointer
-}
-#voiceBtn{background:#ff7a00}
-#sendBtn{background:#4f46ff;color:#fff}
 
-/* ADMIN */
-.admin-bar{background:#222;padding:10px;text-align:center}
-.admin-bar input,select,button{margin:5px;padding:6px}
+.card button{margin:4px}
+
 textarea{
-  width:90%;
-  min-height:60px;
-  margin:5px 0;
-  padding:6px;
-  border-radius:6px;
-  border:none;
+  width:100%;
+  min-height:50px;
+  margin-top:4px;
 }
-.save-btn{
-  background:#25D366;
-  border:none;
-  padding:6px 12px;
-  border-radius:6px;
+
+.hidden{display:none}
+
+/* CHAT */
+#chatButton{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  font-size:22px;
+  background:#ff00cc;
+  padding:14px;
+  border-radius:50%;
   cursor:pointer;
 }
 
+#chatBox{
+  position:fixed;
+  bottom:80px;
+  right:20px;
+  width:320px;
+  height:420px;
+  background:#000;
+  border-radius:15px;
+  display:flex;
+  flex-direction:column;
+}
+
+.chat-header{
+  background:linear-gradient(90deg,#ff00cc,#3333ff);
+  padding:10px;
+  font-weight:bold;
+}
+
+.chat-messages{
+  flex:1;
+  padding:10px;
+  overflow:auto;
+}
+
+.user-message{background:#333;padding:6px;border-radius:8px;margin:4px;text-align:right}
+.bot-message{background:#ff00cc;padding:6px;border-radius:8px;margin:4px}
