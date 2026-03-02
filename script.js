@@ -254,3 +254,39 @@ style="color:#00ff88;font-weight:bold;">
 Chat on WhatsApp 📲
 </a>`;
 }
+/*********************
+  VOICE INPUT (MIC)
+*********************/
+function startVoice(){
+  if (!("webkitSpeechRecognition" in window)) {
+    alert("Voice typing is not supported in this browser 😕\nUse Chrome on mobile or PC");
+    return;
+  }
+
+  const micBtn = document.getElementById("voiceBtn");
+  if (micBtn) micBtn.classList.add("listening");
+
+  const recognition = new webkitSpeechRecognition();
+  recognition.lang = "en-IN";     // Hinglish / English
+  recognition.interimResults = false;
+  recognition.continuous = false;
+
+  recognition.onresult = (event) => {
+    const text = event.results[0][0].transcript;
+    const input = document.getElementById("userInput");
+
+    input.value = text;
+    input.dispatchEvent(new Event("input")); // auto suggestions trigger
+  };
+
+  recognition.onerror = () => {
+    if (micBtn) micBtn.classList.remove("listening");
+  };
+
+  recognition.onend = () => {
+    if (micBtn) micBtn.classList.remove("listening");
+  };
+
+  recognition.start();
+}
+
