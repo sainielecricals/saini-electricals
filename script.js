@@ -5,9 +5,26 @@ const password = "dhairya123";
 const whatsappNumber = "919548021272";
 
 /*********************
-  LIVE DATA ONLY
+  INIT DATA (SAFE)
 *********************/
-let data = JSON.parse(localStorage.getItem("sainiData")) || {};
+let data = JSON.parse(localStorage.getItem("sainiData"));
+
+if (!data || Object.keys(data).length === 0) {
+  data = {
+    "☀️ Solar Section": [
+      { name: "Solar Panel 550W", price: 28000 },
+      { name: "Solar Inverter 5KW", price: 45000 }
+    ],
+    "⚡ Power Backup": [
+      { name: "Inverter 1100VA", price: 6500 }
+    ],
+    "❄️ Cooling & Air": [
+      { name: "Blue Star 1.5 Ton AC", price: 36500 }
+    ]
+  };
+  saveData();
+}
+
 function saveData() {
   localStorage.setItem("sainiData", JSON.stringify(data));
 }
@@ -93,15 +110,12 @@ function togglePopular(category, index) {
 }
 
 /*********************
-  FILTER & SEARCH
+  FILTER
 *********************/
-function scrollToProducts() {
-  document.getElementById("products")
-    .scrollIntoView({ behavior: "smooth" });
-}
-
 function createFilters() {
   const filterBar = document.getElementById("filterBar");
+  if (!filterBar) return;
+
   filterBar.innerHTML = `<button onclick="showAll()">All</button>`;
 
   for (let category in data) {
@@ -125,12 +139,27 @@ function showAll() {
 }
 
 /*********************
-  EDIT MODE
+  EDIT MODE (FIXED)
 *********************/
-const urlParams = new URLSearchParams(window.location.search);
-if (urlParams.get("edit") === password) enableEditMode();
-
 function enableEditMode() {
+  if (document.getElementById("editBadge")) return;
+
+  document.body.insertAdjacentHTML(
+    "afterbegin",
+    `<div id="editBadge" style="
+      position:fixed;
+      top:10px;
+      left:10px;
+      background:#ff7a00;
+      color:#000;
+      padding:6px 12px;
+      border-radius:6px;
+      font-weight:bold;
+      z-index:9999;">
+      ✏️ EDIT MODE
+    </div>`
+  );
+
   document.querySelectorAll(".img-input").forEach(i => i.classList.remove("hidden"));
   document.querySelectorAll(".delete-btn").forEach(b => b.classList.remove("hidden"));
   document.querySelectorAll(".popular-btn").forEach(b => b.classList.remove("hidden"));
@@ -147,21 +176,33 @@ function enableEditMode() {
       saveData();
     };
   });
+
+  // Image upload
+  document.querySelectorAll(".img-input").forEach(input => {
+    input.onchange = function () {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const card = input.parentElement;
+        card.querySelector("img").src = reader.result;
+
+        const name = card.querySelector("h3").innerText;
+        for (let cat in data) {
+          data[cat].forEach(p => {
+            if (p.name === name) p.image = reader.result;
+          });
+        }
+        saveData();
+      };
+      reader.readAsDataURL(this.files[0]);
+    };
+  });
 }
 
 /*********************
-  CHATBOT
+  CHAT
 *********************/
 function toggleChat() {
-  const box = document.getElementById("chatBox");
-  box.classList.toggle("hidden");
-
-  if (!box.classList.contains("hidden")) {
-    const chat = document.getElementById("chatMessages");
-    if (!chat.children.length) {
-      addChat(renderWelcome(), "bot");
-    }
-  }
+  document.getElementById("chatBox").classList.toggle("hidden");
 }
 
 function sendMessage() {
@@ -173,7 +214,7 @@ function sendMessage() {
   input.value = "";
 
   setTimeout(() => {
-    addChat(getBotReply(msg), "bot");
+    addChat(renderWelcome(), "bot");
   }, 400);
 }
 
@@ -186,107 +227,23 @@ function addChat(text, type) {
   chat.scrollTop = chat.scrollHeight;
 }
 
-/*********************
-  CHAT CONTENT
-*********************/
 function renderWelcome() {
-  let html = `
-👋 <b>Welcome to Saini Electricals</b><br>
-Popular products 👇<br><br>
-`;
-
-  getPopularProducts().forEach(p => {
-    html += `• ${p.name} – ₹${p.price}<br>`;
-  });
-
-  html += `
-<br>
-👉 <a href="https://wa.me/${whatsappNumber}" target="_blank"
-style="color:#00ff88;font-weight:bold;">
-Chat on WhatsApp 📲
-</a>`;
-  return html;
-}
-
-function getPopularProducts() {
-  let list = [];
+  let html = `<b>Welcome to Saini Electricals</b><br><br>`;
   for (let cat in data) {
     data[cat].forEach(p => {
-      if (p.popular) list.push(p);
+      if (p.popular) html += `• ${p.name} – ₹${p.price}<br>`;
     });
   }
-  return list;
-}
-
-function getBotReply(msg) {
-  msg = msg.toLowerCase();
-
-  for (let cat in data) {
-    if (msg.includes(cat.toLowerCase())) {
-      return formatCategory(cat);
-    }
-    for (let p of data[cat]) {
-      if (msg.includes(p.name.toLowerCase())) {
-        return formatProduct(p);
-      }
-    }
-  }
-
-  return renderWelcome();
-}
-
-function formatCategory(cat) {
-  let html = `<b>${cat}</b><br><br>`;
-  data[cat].forEach(p => {
-    html += `• ${p.name} – ₹${p.price}<br>`;
-  });
+  html += `<br><a href="https://wa.me/${whatsappNumber}" target="_blank">Chat on WhatsApp 📲</a>`;
   return html;
 }
 
-function formatProduct(p) {
-  return `
-<b>${p.name}</b><br>
-💰 ₹${p.price}<br><br>
-👉 <a href="https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-    "Details about " + p.name
-  )}" target="_blank"
-style="color:#00ff88;font-weight:bold;">
-Chat on WhatsApp 📲
-</a>`;
-}
 /*********************
-  VOICE INPUT (MIC)
+  EDIT MODE TRIGGER (IMPORTANT)
 *********************/
-function startVoice(){
-  if (!("webkitSpeechRecognition" in window)) {
-    alert("Voice typing is not supported in this browser 😕\nUse Chrome on mobile or PC");
-    return;
+window.addEventListener("load", () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get("edit") === password) {
+    enableEditMode();
   }
-
-  const micBtn = document.getElementById("voiceBtn");
-  if (micBtn) micBtn.classList.add("listening");
-
-  const recognition = new webkitSpeechRecognition();
-  recognition.lang = "en-IN";     // Hinglish / English
-  recognition.interimResults = false;
-  recognition.continuous = false;
-
-  recognition.onresult = (event) => {
-    const text = event.results[0][0].transcript;
-    const input = document.getElementById("userInput");
-
-    input.value = text;
-    input.dispatchEvent(new Event("input")); // auto suggestions trigger
-  };
-
-  recognition.onerror = () => {
-    if (micBtn) micBtn.classList.remove("listening");
-  };
-
-  recognition.onend = () => {
-    if (micBtn) micBtn.classList.remove("listening");
-  };
-
-  recognition.start();
-}
-
+});
