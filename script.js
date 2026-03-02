@@ -1,65 +1,58 @@
 const password="dhairya123";
 const whatsapp="919548021272";
 
-/* INIT DATA */
+/* DATA */
 let data=JSON.parse(localStorage.getItem("sainiData"));
 if(!data){
   data={
-    "☀️ Solar Section":[
-      {name:"Solar Panel 550W",price:28000},
-      {name:"Solar Inverter 5KW",price:45000}
-    ],
-    "⚡ Power Backup":[
-      {name:"Inverter 1100VA",price:6500}
-    ]
+    "Solar":[{name:"Solar Panel 550W",price:28000}],
+    "Inverter":[{name:"Inverter 1100VA",price:6500}]
   };
   save();
 }
 function save(){localStorage.setItem("sainiData",JSON.stringify(data));}
 
 /* RENDER */
-const box=document.getElementById("products");
+const products=document.getElementById("products");
 function render(){
-  box.innerHTML="";
-  for(let c in data){
+  products.innerHTML="";
+  for(let cat in data){
     const sec=document.createElement("div");
-    sec.innerHTML=`<h2 class="cat-title">${c}</h2><div class="products"></div>`;
-    box.appendChild(sec);
-    const wrap=sec.querySelector(".products");
-    data[c].forEach((p,i)=>{
-      wrap.innerHTML+=`
-        <div class="card">
-          <img src="${p.image||'https://via.placeholder.com/250'}">
-          <input type="file" class="img-input hidden">
-          <h3>${p.name}</h3>
-          <p class="price">₹ <span>${p.price}</span></p>
-          <button onclick="order('${c}',${i})">Order</button>
-          <button class="delete-btn hidden" onclick="del('${c}',${i})">Delete</button>
-        </div>`;
+    sec.innerHTML=`<h2>${cat}</h2><div class="products"></div>`;
+    products.appendChild(sec);
+    const box=sec.querySelector(".products");
+
+    data[cat].forEach((p,i)=>{
+      box.innerHTML+=`
+      <div class="card">
+        <img src="${p.image||'https://via.placeholder.com/250'}">
+        <input type="file" class="img-input hidden">
+        <h3>${p.name}</h3>
+        <p class="price">₹ <span>${p.price}</span></p>
+        <button onclick="order('${cat}',${i})">Order</button>
+        <button class="delete-btn hidden" onclick="del('${cat}',${i})">Delete</button>
+      </div>`;
     });
   }
 }
-render();
-filters();
+render();filters();
 
 /* FILTER */
 function filters(){
   const f=document.getElementById("filterBar");
   f.innerHTML=`<button onclick="showAll()">All</button>`;
-  for(let c in data){
-    f.innerHTML+=`<button onclick="filter('${c}')">${c}</button>`;
-  }
+  for(let c in data)f.innerHTML+=`<button onclick="filter('${c}')">${c}</button>`;
 }
 function filter(c){
-  document.querySelectorAll(".category").forEach(s=>{
-    s.style.display=s.querySelector("h2").innerText===c?"block":"none";
+  document.querySelectorAll("#products>div").forEach(d=>{
+    d.style.display=d.querySelector("h2").innerText===c?"block":"none";
   });
 }
 function showAll(){
-  document.querySelectorAll(".category").forEach(s=>s.style.display="block");
+  document.querySelectorAll("#products>div").forEach(d=>d.style.display="block");
 }
 
-/* ORDER */
+/* ACTIONS */
 function order(c,i){
   const p=data[c][i];
   window.open(`https://wa.me/${whatsapp}?text=${encodeURIComponent(p.name+" ₹"+p.price)}`);
@@ -74,36 +67,51 @@ function editMode(){
   document.querySelectorAll(".delete-btn,.img-input").forEach(e=>e.classList.remove("hidden"));
 }
 if(new URLSearchParams(location.search).get("edit")===password){
-  document.body.insertAdjacentHTML("afterbegin",
-    `<div class="admin-bar">
-      <input id="newCat" placeholder="New Category">
-      <button onclick="addCat()">Add Category</button>
-    </div>`);
-  editMode();
+  document.body.insertAdjacentHTML("afterbegin",`
+  <div class="admin-bar">
+    <input id="newCat" placeholder="Category">
+    <button onclick="addCat()">Add Category</button><br>
+    <select id="catSel"></select>
+    <input id="newName" placeholder="Product">
+    <input id="newPrice" placeholder="Price">
+    <button onclick="addProd()">Add Product</button>
+  </div>`);
+  updateSelect();editMode();
+}
+
+function updateSelect(){
+  const s=document.getElementById("catSel");
+  if(!s)return;
+  s.innerHTML="";
+  for(let c in data)s.innerHTML+=`<option>${c}</option>`;
 }
 function addCat(){
-  const n=document.getElementById("newCat").value.trim();
+  const n=newCat.value.trim();
   if(!n)return;
-  data[n]=[];
-  save();render();filters();
+  if(!data[n]){data[n]=[];save();render();filters();updateSelect();}
+}
+function addProd(){
+  const c=catSel.value;
+  if(!newName.value||!newPrice.value)return;
+  data[c].push({name:newName.value,price:newPrice.value});
+  save();render();editMode();
+  newName.value="";newPrice.value="";
 }
 
 /* CHAT */
-function toggleChat(){document.getElementById("chatBox").classList.toggle("hidden");}
+function toggleChat(){chatBox.classList.toggle("hidden");}
 function sendMessage(){
-  const i=document.getElementById("userInput");
-  if(!i.value)return;
-  add(i.value,"user");
+  if(!userInput.value)return;
+  add(userInput.value,"user");
   setTimeout(()=>add("WhatsApp kare 👉 https://wa.me/"+whatsapp,"bot"),400);
-  i.value="";
+  userInput.value="";
 }
 function add(t,type){
-  const c=document.getElementById("chatMessages");
   const d=document.createElement("div");
   d.className=type+"-message";
   d.innerHTML=t;
-  c.appendChild(d);
-  c.scrollTop=c.scrollHeight;
+  chatMessages.appendChild(d);
+  chatMessages.scrollTop=chatMessages.scrollHeight;
 }
 
 /* VOICE */
@@ -111,6 +119,6 @@ function startVoice(){
   if(!("webkitSpeechRecognition"in window))return alert("Chrome use kare");
   const r=new webkitSpeechRecognition();
   r.lang="en-IN";
-  r.onresult=e=>document.getElementById("userInput").value=e.results[0][0].transcript;
+  r.onresult=e=>userInput.value=e.results[0][0].transcript;
   r.start();
 }
