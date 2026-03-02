@@ -1,113 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Saini Electricals – Roorkee</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css"/>
 </head>
 
 <body>
 
-  <!-- CHAT BUTTON -->
-  <div id="chatButton" onclick="toggleChat()">💬</div>
+<!-- CHAT FLOAT BUTTON -->
+<div id="chatButton" onclick="toggleChat()">💬</div>
 
-  <!-- CHAT BOX -->
-  <div id="chatBox" class="hidden">
-    <div class="chat-header">
-      <span class="chat-title">Saini Electricals Assistant</span>
-      <span class="chat-close" onclick="toggleChat()">✖</span>
-    </div>
-
-    <div id="chatMessages" class="chat-messages"></div>
-
-    <div class="chat-input">
-      <input id="userInput" placeholder="Ask something...">
-      <button id="voiceBtn" onclick="startVoice()">🎤</button>
-      <button onclick="sendMessage()">Send</button>
-  </div>
-      <input
-        type="text"
-        id="userInput"
-        placeholder="Type your query here…"
-        onkeypress="handleKey(event)">
-      <button onclick="sendMessage()">Send</button>
-    </div>
-
-    <div class="whatsapp-section">
-      <a href="https://wa.me/919548021272" target="_blank">
-        📲 Chat on WhatsApp
-      </a>
-    </div>
+<!-- CHAT BOX -->
+<div id="chatBox" class="hidden">
+  <div class="chat-header">
+    Saini Electricals Assistant
+    <span onclick="toggleChat()">✖</span>
   </div>
 
-  <!-- HERO SECTION -->
-  <header class="hero">
-    <h1 class="hero-title">
-      <span class="hero-icon">⚡</span>
-      SAINI ELECTRICALS
-      <span class="hero-location">– ROORKEE</span>
-    </h1>
+  <div id="chatMessages" class="chat-messages"></div>
 
-    <p class="hero-subtitle">
-      Lighting • Solar • Fans • AC • Inverter • Home Appliances
-    </p>
-
-    <div class="buttons">
-      <button class="btn-primary" onclick="scrollToProducts()">
-        🛒 Shop Now
-      </button>
-
-      <a href="https://wa.me/919548021272" target="_blank">
-        <button class="btn-whatsapp">
-          📲 Order on WhatsApp
-        </button>
-      </a>
-    </div>
-  </header>
-
-  <!-- HIGHLIGHT SECTION -->
-  <section class="highlight">
-    <span>✔ Same Day Delivery in Roorkee</span>
-    <span>✔ AC & Solar Installation</span>
-    <span>✔ Bulk Discount Available</span>
-    <span>✔ Free Consultation</span>
-    <span>✔ Best Price Guarantee</span>
-  </section>
-
-  <!-- SEARCH -->
-  <div class="search-bar">
-    <input
-      type="text"
-      id="searchInput"
-      placeholder="🔍 Search electrical products…"
-      onkeyup="searchProducts()">
+  <div class="chat-input">
+    <input type="text" id="userInput" placeholder="Ask something..."/>
+    <button id="voiceBtn" onclick="startVoice()">🎤</button>
+    <button onclick="sendMessage()">Send</button>
   </div>
+</div>
 
-  <!-- FILTER -->
-  <div class="filter-bar" id="filterBar"></div>
+<header class="hero">
+  <h1>⚡ SAINI ELECTRICALS – ROORKEE</h1>
+  <p>Lighting • Solar • Fans • AC • Inverter • Home Appliances</p>
 
-  <!-- PRODUCTS -->
-  <div id="products"></div>
+  <div class="buttons">
+    <button onclick="scrollToProducts()">Shop Now</button>
+    <a href="https://wa.me/919548021272" target="_blank">
+      <button class="whatsapp">Order on WhatsApp</button>
+    </a>
+  </div>
+</header>
 
-  <!-- FOOTER -->
-  <footer class="site-footer">
-    <div class="footer-line">
-      📍 Roorkee &nbsp; | &nbsp; 📞 +91 95480 21272
-    </div>
-    <div class="footer-copy">
-      © 2026 <strong>Saini Electricals</strong> • All Rights Reserved
-    </div>
-  </footer>
+<section class="highlight">
+  ✔ Same Day Delivery in Roorkee |
+  ✔ AC & Solar Installation |
+  ✔ Bulk Discount |
+  ✔ Free Consultation |
+  ✔ Best Price Guarantee
+</section>
 
-  <!-- FLOATING WHATSAPP -->
-  <a href="https://wa.me/919548021272" target="_blank" class="floating-whatsapp">
-    💬
-  </a>
+<div class="search-bar">
+  <input type="text" id="searchInput" placeholder="Search products..." onkeyup="searchProducts()"/>
+</div>
 
-  <script src="script.js"></script>
+<div class="filter-bar" id="filterBar"></div>
+<div id="products"></div>
+
+<footer>
+  📍 Roorkee | 📞 +91 95480 21272  
+  <br/>© 2026 Saini Electricals
+</footer>
+
+<script src="script.js"></script>
 </body>
 </html>
-
-
-
