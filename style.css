@@ -1,233 +1,46 @@
-/* =====================
-   GLOBAL
-===================== */
-body{
-  margin:0;
-  background:#0f0f0f;
-  color:#fff;
-  font-family:Arial, sans-serif;
-}
+body{margin:0;background:#0f0f0f;color:#fff;font-family:Arial}
 
-.hero{
-  text-align:center;
-  padding:60px 20px;
-  background:linear-gradient(135deg,#ff7a00,#111);
-}
+.hero{text-align:center;padding:60px;background:linear-gradient(135deg,#ff7a00,#111)}
 
-/* =====================
-   CHAT TOGGLE
-===================== */
 #chatToggle{
-  position:fixed;
-  bottom:20px;
-  right:20px;
-  background:#ff00cc;
-  padding:14px;
-  border-radius:50%;
-  cursor:pointer;
-  z-index:9999;
-  box-shadow:0 0 15px rgba(255,0,204,.6);
+  position:fixed;bottom:20px;right:20px;
+  background:#ff00cc;padding:14px;border-radius:50%;
+  cursor:pointer;z-index:9999;
 }
 
-/* =====================
-   CHAT BOX
-===================== */
 #chatBox{
-  position:fixed;
-  bottom:80px;
-  right:20px;
-  width:320px;
-  height:460px;
-  background:#000;
-  border-radius:18px;
-  display:flex;
-  flex-direction:column;
-  transition:.3s;
-  z-index:9999;
-  box-shadow:0 15px 40px rgba(0,0,0,.6);
+  position:fixed;bottom:80px;right:20px;
+  width:320px;height:450px;
+  background:#000;border-radius:18px;
+  display:flex;flex-direction:column;
+  transition:.3s;z-index:9999;
 }
-
-#chatBox.hidden{
-  opacity:0;
-  pointer-events:none;
-  transform:scale(.9);
-}
+#chatBox.hidden{opacity:0;pointer-events:none;transform:scale(.9)}
 
 .chat-header{
-  padding:12px 14px;
+  padding:12px;
   background:linear-gradient(90deg,#ff00cc,#4f46ff);
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  font-weight:bold;
+  display:flex;justify-content:space-between;
 }
 
-.chat-messages{
-  flex:1;
-  padding:12px;
-  overflow-y:auto;
-}
+.chat-messages{flex:1;padding:10px;overflow-y:auto}
 
-.user{
-  background:#4f46ff;
-  padding:8px 12px;
-  border-radius:14px;
-  margin:6px 0;
-  text-align:right;
-  max-width:80%;
-  margin-left:auto;
-}
+.user{background:#4f46ff;padding:8px;border-radius:12px;margin:6px 0;text-align:right}
+.bot{background:#ff00cc;padding:8px;border-radius:12px;margin:6px 0}
 
-.bot{
-  background:#ff00cc;
-  padding:8px 12px;
-  border-radius:14px;
-  margin:6px 0;
-  max-width:80%;
-}
-
-/* =====================
-   CHAT INPUT (FIXED ALIGNMENT)
-===================== */
 .chat-input{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding:10px;
-  border-top:1px solid #222;
+  display:flex;gap:8px;padding:10px;
 }
-
 .chat-input input{
-  flex:1;
-  padding:10px 14px;
-  border-radius:20px;
-  border:none;
-  outline:none;
-  background:#111;
-  color:#fff;
+  flex:1;padding:10px;border-radius:20px;border:none
 }
+#voiceBtn,#sendBtn{
+  width:42px;height:42px;border-radius:50%;
+  border:none;cursor:pointer
+}
+#voiceBtn{background:#ff7a00}
+#sendBtn{background:#4f46ff;color:#fff}
 
-#voiceBtn,
-#sendBtn{
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  border:none;
-  cursor:pointer;
-  flex-shrink:0;
-}
-
-#voiceBtn{
-  background:#ff7a00;
-}
-
-#sendBtn{
-  background:#4f46ff;
-  color:#fff;
-}
-
-/* =====================
-   ADMIN BAR
-===================== */
-.admin-bar{
-  background:#222;
-  padding:12px;
-  text-align:center;
-  border-bottom:2px solid #ff7a00;
-}
-
-.admin-bar input,
-.admin-bar select,
-.admin-bar button{
-  margin:6px;
-  padding:8px;
-  border-radius:6px;
-  border:none;
-}
-
-/* =====================
-   PRODUCT CATEGORIES
-===================== */
-.category{
-  padding:20px 40px;
-}
-
-.category h2{
-  margin:20px 0 14px;
-  color:#ffb000;
-}
-
-/* =====================
-   PRODUCT GRID (CARD FIX)
-===================== */
-.product-grid{
-  display:flex;
-  flex-wrap:wrap;
-  gap:20px;
-}
-
-/* =====================
-   PRODUCT CARD
-===================== */
-.product-card{
-  background:#1b1b1b;
-  width:260px;
-  padding:16px;
-  border-radius:14px;
-  box-shadow:0 0 15px rgba(255,122,0,.25);
-  transition:.3s;
-  display:flex;
-  flex-direction:column;
-}
-
-.product-card:hover{
-  transform:translateY(-5px);
-  box-shadow:0 0 25px rgba(255,122,0,.45);
-}
-
-.product-card h3{
-  margin:0 0 6px;
-}
-
-.product-card .price{
-  font-size:18px;
-  margin-bottom:8px;
-}
-
-.product-card button{
-  margin:4px 4px 4px 0;
-  padding:6px 12px;
-  border:none;
-  border-radius:6px;
-  cursor:pointer;
-  background:#ff7a00;
-  color:#000;
-  font-weight:bold;
-}
-
-/* =====================
-   PRODUCT EXTRA FIELDS
-===================== */
-.product-card textarea{
-  width:100%;
-  margin-top:6px;
-  background:#111;
-  color:#fff;
-  border:1px solid #333;
-  border-radius:6px;
-  padding:6px;
-  font-size:13px;
-  resize:vertical;
-}
-
-/* =====================
-   MOBILE SAFETY
-===================== */
-@media(max-width:600px){
-  .category{
-    padding:20px;
-  }
-  .product-card{
-    width:100%;
-  }
-}
+/* ADMIN */
+.admin-bar{background:#222;padding:10px;text-align:center}
+.admin-bar input,select,button{margin:5px;padding:6px}
