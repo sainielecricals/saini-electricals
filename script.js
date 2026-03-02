@@ -219,7 +219,65 @@ function addChat(text, type) {
   chat.appendChild(div);
   chat.scrollTop = chat.scrollHeight;
 }
+/*********************
+  CHAT AUTO SUGGESTIONS
+*********************/
+const userInput = document.getElementById("userInput");
+const suggestionBox = document.getElementById("chatSuggestions");
 
+userInput.addEventListener("input", () => {
+  const text = userInput.value.toLowerCase().trim();
+  suggestionBox.innerHTML = "";
+
+  if (!text) {
+    suggestionBox.classList.add("hidden");
+    return;
+  }
+
+  let results = [];
+
+  // Category suggestions
+  for (let cat in data) {
+    if (cat.toLowerCase().includes(text)) {
+      results.push({ type: "cat", value: cat });
+    }
+  }
+
+  // Product suggestions
+  for (let cat in data) {
+    data[cat].forEach(p => {
+      if (p.name.toLowerCase().includes(text)) {
+        results.push({ type: "prod", value: p.name });
+      }
+    });
+  }
+
+  if (!results.length) {
+    suggestionBox.classList.add("hidden");
+    return;
+  }
+
+  results.slice(0, 6).forEach(item => {
+    const div = document.createElement("div");
+    div.className = item.type;
+    div.innerText = item.value;
+
+    div.onclick = () => {
+      userInput.value = item.value;
+      suggestionBox.classList.add("hidden");
+      sendMessage(); // auto send
+    };
+
+    suggestionBox.appendChild(div);
+  });
+
+  suggestionBox.classList.remove("hidden");
+});
+
+// hide suggestions after send
+function hideSuggestions(){
+  suggestionBox.classList.add("hidden");
+}
 /*********************
   QUICK BUTTONS
 *********************/
@@ -308,3 +366,4 @@ WhatsApp pe baat karein 📲
 </a>
 `;
 }
+
