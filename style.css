@@ -1,11 +1,11 @@
 /* ================= ROOT EDITABLE COLORS ================= */
 :root{
-  --primary-color: #ff7a00;
+  --primary-color: #ff8c00;
   --secondary-color: #25D366;
   --bg-dark: #0f0f0f;
   --card-bg: #1b1b1b;
   --text-color: #ffffff;
-  --highlight-bg: #1a1a1a;
+  --highlight-bg: #141414;
   --chat-gradient-1: #ff00cc;
   --chat-gradient-2: #3333ff;
 }
@@ -13,7 +13,7 @@
 /* ================= GLOBAL ================= */
 body{
   margin:0;
-  font-family:Arial, sans-serif;
+  font-family: "Segoe UI", Arial, sans-serif;
   background: var(--bg-dark);
   color: var(--text-color);
   background-size: cover;
@@ -24,72 +24,130 @@ body{
 /* ================= HERO ================= */
 .hero{
   text-align:center;
-  padding:70px 20px;
-  background: linear-gradient(135deg, var(--primary-color), #111);
+  padding:90px 20px;
+  position:relative;
+  background:
+    linear-gradient(
+      rgba(0,0,0,0.55),
+      rgba(0,0,0,0.65)
+    ),
+    linear-gradient(135deg, var(--primary-color), #111);
   background-size:cover;
   background-position:center;
-  animation: glow 3s infinite alternate;
 }
 
-@keyframes glow{
-  from{box-shadow:0 0 20px var(--primary-color);}
-  to{box-shadow:0 0 40px var(--primary-color);}
+/* HERO TEXT */
+.hero-title{
+  font-size:42px;
+  font-weight:800;
+  letter-spacing:1px;
+  margin-bottom:10px;
+  text-shadow:0 4px 15px rgba(0,0,0,0.7);
 }
 
+.hero-icon{
+  font-size:36px;
+  margin-right:6px;
+}
+
+.hero-location{
+  font-weight:600;
+  opacity:0.9;
+}
+
+.hero-subtitle{
+  font-size:17px;
+  opacity:0.95;
+  margin-bottom:30px;
+}
+
+/* ================= BUTTONS ================= */
 .buttons button{
-  padding:10px 20px;
+  padding:12px 26px;
   margin:10px;
   border:none;
   cursor:pointer;
-  border-radius:5px;
+  border-radius:6px;
+  font-size:15px;
+  font-weight:600;
+  transition:0.3s;
+}
+
+.btn-primary{
   background: var(--primary-color);
   color:#000;
 }
 
-.whatsapp{
-  background: var(--secondary-color) !important;
+.btn-primary:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 20px rgba(255,140,0,0.5);
+}
+
+.btn-whatsapp{
+  background: var(--secondary-color);
   color:#fff;
+}
+
+.btn-whatsapp:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 20px rgba(37,211,102,0.5);
 }
 
 /* ================= HIGHLIGHT ================= */
 .highlight{
   text-align:center;
-  padding:15px;
-  background: var(--highlight-bg);
+  padding:14px 10px;
+  background: linear-gradient(90deg,#111,#1a1a1a,#111);
+  font-size:14px;
 }
 
-/* ================= SEARCH & FILTER ================= */
+.highlight span{
+  margin:0 8px;
+  white-space:nowrap;
+}
+
+/* ================= SEARCH ================= */
 .search-bar{
   text-align:center;
-  padding:20px;
+  padding:25px 15px;
 }
 
 .search-bar input{
-  padding:10px;
+  padding:12px 15px;
   width:60%;
-  max-width:400px;
-  border-radius:5px;
+  max-width:420px;
+  border-radius:6px;
   border:none;
+  outline:none;
+  font-size:14px;
 }
 
+/* ================= FILTER ================= */
 .filter-bar{
   text-align:center;
   margin-bottom:20px;
 }
 
 .filter-bar button{
-  margin:5px;
-  padding:6px 12px;
+  margin:6px;
+  padding:7px 16px;
   border:none;
   background: var(--primary-color);
   cursor:pointer;
-  border-radius:4px;
+  border-radius:20px;
+  font-size:13px;
+  font-weight:600;
   color:#000;
 }
 
 /* ================= PRODUCTS ================= */
 .category{
-  padding:20px;
+  padding:30px 20px;
+}
+
+.category h2{
+  font-size:26px;
+  margin-bottom:20px;
 }
 
 .products{
@@ -98,45 +156,55 @@ body{
   justify-content:center;
 }
 
+/* PRODUCT CARD */
 .card{
-  background: var(--card-bg);
-  width:240px;
+  background: linear-gradient(180deg,#1c1c1c,#121212);
+  width:250px;
   margin:15px;
-  padding:15px;
-  border-radius:10px;
+  padding:22px 18px;
+  border-radius:14px;
   text-align:center;
-  box-shadow:0 0 10px rgba(255,140,0,0.4);
+  box-shadow:0 0 18px rgba(255,140,0,0.25);
   transition:0.3s;
 }
 
 .card:hover{
-  transform:scale(1.05);
+  transform:translateY(-6px);
+  box-shadow:0 12px 30px rgba(255,140,0,0.45);
 }
 
 .card img{
   width:100%;
-  border-radius:8px;
+  height:140px;
+  object-fit:contain;
+  margin-bottom:10px;
+}
+
+.card h3{
+  font-size:17px;
+  margin:10px 0;
 }
 
 .price{
   font-size:18px;
-  margin:8px 0;
+  font-weight:700;
+  margin:10px 0;
 }
 
 .card button{
-  padding:8px;
+  padding:8px 16px;
   background: var(--primary-color);
   border:none;
   cursor:pointer;
-  border-radius:4px;
-  margin:5px;
+  border-radius:6px;
+  font-weight:600;
 }
 
 /* ================= ADMIN ================= */
 .admin-bar{
   text-align:center;
   padding:15px;
-  background:#222;
+  background:#1c1c1c;
   border-bottom:2px solid var(--primary-color);
 }
 
@@ -147,7 +215,7 @@ body{
 }
 
 .delete-btn{
-  background:red !important;
+  background:#ff3333 !important;
   color:white;
 }
 
@@ -166,53 +234,47 @@ body{
   border-radius:50%;
   font-size:20px;
   text-decoration:none;
-  box-shadow:0 0 10px var(--secondary-color);
+  box-shadow:0 0 15px rgba(37,211,102,0.6);
 }
 
 /* ================= FOOTER ================= */
-footer{
+.site-footer{
   text-align:center;
-  padding:20px;
-  background:#111;
-  margin-top:40px;
+  padding:25px 10px;
+  background:#0b0b0b;
+  font-size:14px;
 }
 
-/* ================= CHAT BUTTON ================= */
+.footer-copy{
+  margin-top:6px;
+  opacity:0.7;
+}
+
+/* ================= CHAT ================= */
 #chatButton{
   position:fixed;
   bottom:20px;
   right:20px;
-  background: linear-gradient(45deg,
-    var(--chat-gradient-1),
-    var(--chat-gradient-2)
-  );
+  background: linear-gradient(45deg,var(--chat-gradient-1),var(--chat-gradient-2));
   color:white;
   font-size:22px;
   padding:16px;
   border-radius:50%;
   cursor:pointer;
-  box-shadow:0 0 20px var(--chat-gradient-1);
-  animation: chatGlow 2s infinite alternate;
+  box-shadow:0 0 25px rgba(255,0,204,0.6);
   z-index:999;
 }
 
-@keyframes chatGlow{
-  from{box-shadow:0 0 15px var(--chat-gradient-1);}
-  to{box-shadow:0 0 30px var(--chat-gradient-2);}
-}
-
-/* ================= CHAT BOX ================= */
 #chatBox{
   position:fixed;
   bottom:80px;
   right:20px;
   width:340px;
   height:480px;
-  backdrop-filter: blur(20px);
-  background: rgba(0,0,0,0.65);
-  border-radius:20px;
-  border:2px solid rgba(255,255,255,0.3);
-  box-shadow:0 15px 40px rgba(0,0,0,0.4);
+  backdrop-filter: blur(18px);
+  background: rgba(0,0,0,0.75);
+  border-radius:18px;
+  border:2px solid rgba(255,255,255,0.25);
   display:flex;
   flex-direction:column;
   overflow:hidden;
@@ -220,88 +282,33 @@ footer{
 }
 
 .chat-header{
-  background: linear-gradient(90deg,
-    var(--chat-gradient-1),
-    var(--chat-gradient-2)
-  );
+  background: linear-gradient(90deg,var(--chat-gradient-1),var(--chat-gradient-2));
   color:white;
-  padding:15px;
-  font-weight:bold;
+  padding:14px;
+  font-weight:700;
   display:flex;
   justify-content:space-between;
 }
 
-/* ================= CHAT MESSAGES ================= */
 .chat-messages{
   flex:1;
   padding:12px;
   overflow-y:auto;
-  color:white;
 }
 
-.user-message{
+.user{
   background: var(--chat-gradient-2);
   padding:8px 12px;
-  border-radius:15px;
+  border-radius:14px;
   margin:6px 0;
-  text-align:right;
-  max-width:80%;
+  align-self:flex-end;
 }
 
-.bot-message{
+.bot{
   background: var(--chat-gradient-1);
   padding:8px 12px;
-  border-radius:15px;
+  border-radius:14px;
   margin:6px 0;
-  max-width:80%;
-}
-
-/* ================= CHAT INPUT ================= */
-.chat-input{
-  display:flex;
-  border-top:1px solid rgba(255,255,255,0.3);
-}
-
-.chat-input input{
-  flex:1;
-  border:none;
-  padding:12px;
-  outline:none;
-  background:transparent;
-  color:white;
-}
-
-.chat-input button{
-  background: var(--chat-gradient-2);
-  color:white;
-  border:none;
-  padding:12px;
-  cursor:pointer;
-}
-
-.chat-input button:hover{
-  background: var(--chat-gradient-1);
-}
-
-/* ================= BACKGROUND EDITOR PANEL ================= */
-#bgEditor{
-  position:sticky;
-  top:0;
-  z-index:3000;
-  background:#222;
-  color:white;
-  padding:12px;
-  border-bottom:2px solid var(--primary-color);
-}
-
-#bgEditor label{
-  color:#ffcc00;
-  font-size:14px;
-}
-
-#bgEditor input,
-#bgEditor button{
-  margin:5px;
 }
 
 /* ================= MOBILE ================= */
