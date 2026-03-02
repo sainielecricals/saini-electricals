@@ -374,5 +374,32 @@ body{
 .bot-message{
   line-height:1.5;
 }
+/* ================= CHAT AUTO SUGGESTIONS ================= */
+.chat-suggestions{
+  background: rgba(0,0,0,0.9);
+  max-height: 180px;
+  overflow-y: auto;
+  border-top: 1px solid rgba(255,255,255,0.2);
+}
+
+.chat-suggestions div{
+  padding:10px 14px;
+  cursor:pointer;
+  font-size:14px;
+  border-bottom:1px solid rgba(255,255,255,0.1);
+}
+
+.chat-suggestions div:hover{
+  background:#222;
+}
+
+.chat-suggestions .cat{
+  color:#ffcc00;
+  font-weight:bold;
+}
+
+.chat-suggestions .prod{
+  color:#fff;
+}
 
 
