@@ -44,3 +44,19 @@ body{margin:0;background:#0f0f0f;color:#fff;font-family:Arial}
 /* ADMIN */
 .admin-bar{background:#222;padding:10px;text-align:center}
 .admin-bar input,select,button{margin:5px;padding:6px}
+textarea{
+  width:90%;
+  min-height:60px;
+  margin:5px 0;
+  padding:6px;
+  border-radius:6px;
+  border:none;
+}
+.save-btn{
+  background:#25D366;
+  border:none;
+  padding:6px 12px;
+  border-radius:6px;
+  cursor:pointer;
+}
+
