@@ -176,6 +176,68 @@ function addChat(text, type) {
 }
 
 /*********************
+  CHATBOT (SMART + SYNCED)
+*********************/
+function toggleChat() {
+  const box = document.getElementById("chatBox");
+  box.classList.toggle("hidden");
+
+  if (!box.classList.contains("hidden")) {
+    const chat = document.getElementById("chatMessages");
+    if (chat.children.length === 0) {
+      addChat(`
+👋 <b>Welcome to Saini Electricals!</b><br>
+Bhai batao, kya chahiye aaj? 😊<br><br>
+${renderQuickButtons()}
+`, "bot");
+    }
+  }
+}
+
+function handleKey(e) {
+  if (e.key === "Enter") sendMessage();
+}
+
+function sendMessage() {
+  const input = document.getElementById("userInput");
+  const msg = input.value.trim();
+  if (!msg) return;
+
+  addChat(msg, "user");
+  input.value = "";
+
+  setTimeout(() => {
+    addChat(getBotReply(msg), "bot");
+  }, 400);
+}
+
+function addChat(text, type) {
+  const chat = document.getElementById("chatMessages");
+  const div = document.createElement("div");
+  div.className = type === "user" ? "user-message" : "bot-message";
+  div.innerHTML = text;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+/*********************
+  QUICK BUTTONS
+*********************/
+function renderQuickButtons() {
+  let buttons = "";
+  for (let cat in data) {
+    buttons += `
+      <button onclick="addChat(formatCategoryReply('${cat}'),'bot')"
+      style="margin:4px;padding:6px 10px;border-radius:12px;
+      background:#333;color:#fff;border:none;cursor:pointer;">
+        ${cat}
+      </button>
+    `;
+  }
+  return `<div style="margin-top:10px;">${buttons}</div>`;
+}
+
+/*********************
   SMART BOT REPLY
 *********************/
 function getBotReply(msg) {
@@ -192,40 +254,57 @@ function getBotReply(msg) {
   for (let category in data) {
     for (let product of data[category]) {
       if (msg.includes(product.name.toLowerCase())) {
-        return `
-📦 <b>${product.name}</b><br>
-💰 Price: ₹${product.price}<br><br>
-👉 <a href="https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-          "I want details about " + product.name
-        )}" target="_blank"
-style="color:#fff;font-weight:bold;">
-Chat on WhatsApp
-</a>`;
+        return formatProductReply(product);
       }
     }
   }
 
   return `
-🤖 You can ask about:<br>
-• Solar<br>
-• Inverter<br>
-• AC<br>
-• Batteries<br><br>
-Type product or category name 👇
+Samajh nahi aaya bhai 🤔<br>
+Tu category ya product ka naam likh de.<br><br>
+${renderQuickButtons()}
 `;
 }
 
+/*********************
+  CATEGORY REPLY
+*********************/
 function formatCategoryReply(category) {
   let reply = `🔹 <b>${category}</b><br><br>`;
+
   data[category].forEach(p => {
-    reply += `• ${p.name} – ₹${p.price}<br>`;
+    reply += `
+      <div style="margin-bottom:10px;">
+        ${p.image ? `<img src="${p.image}" style="width:100%;border-radius:8px;">` : ""}
+        <b>${p.name}</b><br>
+        💰 ₹${p.price}
+      </div>
+    `;
   });
 
-  reply += `<br>
+  reply += `
 👉 <a href="https://wa.me/${whatsappNumber}" target="_blank"
-style="color:#fff;font-weight:bold;">
-Chat on WhatsApp
-</a>`;
+style="color:#00ff88;font-weight:bold;">
+WhatsApp pe baat kar lein 📲
+</a>
+`;
 
   return reply;
+}
+
+/*********************
+  PRODUCT REPLY
+*********************/
+function formatProductReply(product) {
+  return `
+📦 <b>${product.name}</b><br>
+${product.image ? `<img src="${product.image}" style="width:100%;border-radius:8px;">` : ""}
+💰 Price: ₹${product.price}<br><br>
+👉 <a href="https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
+    "Bhai " + product.name + " ke baare me details chahiye"
+  )}" target="_blank"
+style="color:#00ff88;font-weight:bold;">
+WhatsApp pe baat karein 📲
+</a>
+`;
 }
