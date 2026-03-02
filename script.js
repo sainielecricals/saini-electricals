@@ -108,9 +108,7 @@ function createFilters() {
 function filterCategory(category) {
   document.querySelectorAll(".category").forEach(sec => {
     sec.style.display =
-      sec.querySelector("h2").innerText === category
-        ? "block"
-        : "none";
+      sec.querySelector("h2").innerText === category ? "block" : "none";
   });
 }
 
@@ -147,19 +145,12 @@ function enableEditMode() {
 
   adminBar.innerHTML = `
     <h3>🛠 Product Editor</h3>
-
-    <input type="text" id="newCategoryName"
-      placeholder="New Category (optional)">
-
+    <input type="text" id="newCategoryName" placeholder="New Category (optional)">
     <br><br>
-
     <select id="newCategory"></select>
-
     <br><br>
-
     <input type="text" id="newName" placeholder="Product Name">
     <input type="number" id="newPrice" placeholder="Price">
-
     <br><br>
     <button onclick="addProduct()">Add Product</button>
   `;
@@ -167,10 +158,9 @@ function enableEditMode() {
   document.body.insertBefore(adminBar, container);
   updateCategoryDropdown();
 
-  /* PRICE EDIT */
   document.querySelectorAll(".price span").forEach(span => {
     span.contentEditable = true;
-    span.addEventListener("blur", () => {
+    span.onblur = () => {
       const name = span.closest(".card").querySelector("h3").innerText;
       for (let cat in data) {
         data[cat].forEach(p => {
@@ -178,13 +168,12 @@ function enableEditMode() {
         });
       }
       saveData();
-    });
+    };
   });
 
-  /* IMAGE UPLOAD */
   document.querySelectorAll(".img-input").forEach(input => {
     input.classList.remove("hidden");
-    input.addEventListener("change", function () {
+    input.onchange = function () {
       const reader = new FileReader();
       reader.onload = () => {
         const card = input.parentElement;
@@ -198,7 +187,7 @@ function enableEditMode() {
         saveData();
       };
       reader.readAsDataURL(this.files[0]);
-    });
+    };
   });
 
   document.querySelectorAll(".delete-btn")
@@ -207,7 +196,6 @@ function enableEditMode() {
 
 function updateCategoryDropdown() {
   const select = document.getElementById("newCategory");
-  if (!select) return;
   select.innerHTML = "";
   Object.keys(data).forEach(cat => {
     const opt = document.createElement("option");
@@ -228,14 +216,10 @@ function addProduct() {
     cat = newCat;
   }
 
-  if (!cat || !name || !price) {
-    alert("Category, Product name & price required");
-    return;
-  }
+  if (!cat || !name || !price) return alert("All fields required");
 
   data[cat].push({ name, price });
   saveData();
-
   renderProducts();
   createFilters();
   document.getElementById("adminBarMain").remove();
@@ -257,13 +241,9 @@ function sendMessage() {
   const input = document.getElementById("userInput");
   const msg = input.value.trim();
   if (!msg) return;
-
   addChat(msg, "user");
   input.value = "";
-
-  setTimeout(() => {
-    addChat(getBotReply(msg), "bot");
-  }, 600);
+  setTimeout(() => addChat(getBotReply(msg), "bot"), 500);
 }
 
 function addChat(text, type) {
@@ -277,23 +257,12 @@ function addChat(text, type) {
 
 function getBotReply(msg) {
   msg = msg.toLowerCase();
-
-  if (msg.includes("ac"))
-    return "Blue Star 1.5 Ton AC available. Same day delivery.";
-
-  if (msg.includes("solar"))
-    return "Solar panel & inverter available. Free consultation.";
-
-  if (msg.includes("inverter"))
-    return "1100VA inverter available from ₹6,500.";
-
-  if (msg.includes("delivery"))
-    return "Yes! Same day delivery in Roorkee.";
-
-  if (msg.includes("price"))
-    return "Product ka naam bataye, exact price bata denge.";
-
-  return "Madad ke liye WhatsApp kare 👉 https://wa.me/919548021272";
+  if (msg.includes("ac")) return "Blue Star AC available. Same day delivery.";
+  if (msg.includes("solar")) return "Solar panels & inverter available.";
+  if (msg.includes("inverter")) return "1100VA inverter from ₹6,500.";
+  if (msg.includes("delivery")) return "Yes, same day delivery in Roorkee.";
+  if (msg.includes("price")) return "Product ka naam bataye.";
+  return "WhatsApp kare 👉 https://wa.me/919548021272";
 }
 
 /*********************
@@ -305,14 +274,12 @@ function enableBgEditor() {
   const bar = document.createElement("div");
   bar.className = "admin-bar";
   bar.id = "bgEditor";
-
   bar.innerHTML = `
     <h3>🎨 Background Editor</h3>
     <input type="color" onchange="setBgColor(this.value)">
     <input type="file" accept="image/*" onchange="setBgImage(this)">
     <button onclick="resetBg()">Reset</button>
   `;
-
   document.body.insertBefore(bar, document.body.firstChild);
 }
 
@@ -320,12 +287,12 @@ function setBgColor(color) {
   document.body.style.backgroundColor = color;
   document.body.style.backgroundImage = "none";
   localStorage.setItem("bgColor", color);
+  localStorage.removeItem("bgImage");
 }
 
 function setBgImage(input) {
   const file = input.files[0];
   if (!file) return;
-
   const reader = new FileReader();
   reader.onload = () => {
     document.body.style.backgroundImage = `url('${reader.result}')`;
@@ -343,8 +310,13 @@ function resetBg() {
 }
 
 (function loadBg(){
-  const c = localStorage.getItem("bgColor");
-  const i = localStorage.getItem("bgImage");
-  if (i) setBgImage({ files:[i] });
-  else if (c) setBgColor(c);
+  const img = localStorage.getItem("bgImage");
+  const color = localStorage.getItem("bgColor");
+  if (img) {
+    document.body.style.backgroundImage = `url('${img}')`;
+    document.body.style.backgroundSize = "cover";
+    document.body.style.backgroundPosition = "center";
+  } else if (color) {
+    document.body.style.backgroundColor = color;
+  }
 })();
