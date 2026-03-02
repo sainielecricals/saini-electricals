@@ -5,22 +5,14 @@ const password = "dhairya123";
 const whatsappNumber = "919548021272";
 
 /*********************
-  DEFAULT DATA
+  LIVE DATA ONLY
 *********************/
-const defaultData = {
-  "☀️ Solar Section": [
-    { name: "Solar Panel 550W", price: 28000 },
-    { name: "Solar Inverter 5KW", price: 45000 }
-  ],
-  "⚡ Power Backup": [
-    { name: "Inverter 1100VA", price: 6500 }
-  ],
-  "❄️ Cooling & Air": [
-    { name: "Blue Star 1.5 Ton AC", price: 36500 }
-  ]
-};
+let data = JSON.parse(localStorage.getItem("sainiData"));
 
-let data = JSON.parse(localStorage.getItem("sainiData")) || defaultData;
+if (!data || typeof data !== "object") {
+  data = {}; // empty start, no default
+  localStorage.setItem("sainiData", JSON.stringify(data));
+}
 
 function saveData() {
   localStorage.setItem("sainiData", JSON.stringify(data));
@@ -126,109 +118,17 @@ function searchProducts() {
 }
 
 /*********************
-  EDIT MODE (ADMIN)
+  EDIT MODE
 *********************/
 const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.get("edit") === password) {
   enableEditMode();
   enableBgEditor();
-  enableHeroBgEditor(); // ✅ NEW
-}
-
-function enableEditMode() {
-  if (document.getElementById("adminBarMain")) return;
-
-  alert("Edit Mode Activated");
-
-  const adminBar = document.createElement("div");
-  adminBar.className = "admin-bar";
-  adminBar.id = "adminBarMain";
-
-  adminBar.innerHTML = `
-    <h3>🛠 Product Editor</h3>
-    <input type="text" id="newCategoryName" placeholder="New Category (optional)">
-    <br><br>
-    <select id="newCategory"></select>
-    <br><br>
-    <input type="text" id="newName" placeholder="Product Name">
-    <input type="number" id="newPrice" placeholder="Price">
-    <br><br>
-    <button onclick="addProduct()">Add Product</button>
-  `;
-
-  document.body.insertBefore(adminBar, container);
-  updateCategoryDropdown();
-
-  document.querySelectorAll(".price span").forEach(span => {
-    span.contentEditable = true;
-    span.onblur = () => {
-      const name = span.closest(".card").querySelector("h3").innerText;
-      for (let cat in data) {
-        data[cat].forEach(p => {
-          if (p.name === name) p.price = span.innerText;
-        });
-      }
-      saveData();
-    };
-  });
-
-  document.querySelectorAll(".img-input").forEach(input => {
-    input.classList.remove("hidden");
-    input.onchange = function () {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const card = input.parentElement;
-        card.querySelector("img").src = reader.result;
-        const name = card.querySelector("h3").innerText;
-        for (let cat in data) {
-          data[cat].forEach(p => {
-            if (p.name === name) p.image = reader.result;
-          });
-        }
-        saveData();
-      };
-      reader.readAsDataURL(this.files[0]);
-    };
-  });
-
-  document.querySelectorAll(".delete-btn")
-    .forEach(btn => btn.classList.remove("hidden"));
-}
-
-function updateCategoryDropdown() {
-  const select = document.getElementById("newCategory");
-  select.innerHTML = "";
-  Object.keys(data).forEach(cat => {
-    const opt = document.createElement("option");
-    opt.value = cat;
-    opt.innerText = cat;
-    select.appendChild(opt);
-  });
-}
-
-function addProduct() {
-  const newCat = document.getElementById("newCategoryName").value.trim();
-  let cat = document.getElementById("newCategory").value;
-  const name = document.getElementById("newName").value.trim();
-  const price = document.getElementById("newPrice").value;
-
-  if (newCat) {
-    if (!data[newCat]) data[newCat] = [];
-    cat = newCat;
-  }
-
-  if (!cat || !name || !price) return alert("All fields required");
-
-  data[cat].push({ name, price });
-  saveData();
-  renderProducts();
-  createFilters();
-  document.getElementById("adminBarMain").remove();
-  enableEditMode();
+  enableHeroBgEditor();
 }
 
 /*********************
-  CHATBOT
+  CHATBOT (DYNAMIC)
 *********************/
 function toggleChat() {
   const box = document.getElementById("chatBox");
@@ -237,10 +137,18 @@ function toggleChat() {
   if (!box.classList.contains("hidden")) {
     const chat = document.getElementById("chatMessages");
     if (chat.children.length === 0) {
-      addChat("👋 Welcome to Saini Electricals!\nHow can I help you today?", "bot");
+      addChat(`
+👋 <b>Welcome to Saini Electricals!</b><br>
+How can I help you today?<br><br>
+👉 <a href="https://wa.me/${whatsappNumber}" target="_blank"
+style="color:#fff;font-weight:bold;">
+Chat on WhatsApp
+</a>
+`, "bot");
     }
   }
 }
+
 function handleKey(e) {
   if (e.key === "Enter") sendMessage();
 }
@@ -249,149 +157,75 @@ function sendMessage() {
   const input = document.getElementById("userInput");
   const msg = input.value.trim();
   if (!msg) return;
+
   addChat(msg, "user");
   input.value = "";
-  setTimeout(() => addChat(getBotReply(msg), "bot"), 500);
+
+  setTimeout(() => {
+    addChat(getBotReply(msg), "bot");
+  }, 400);
 }
 
 function addChat(text, type) {
   const chat = document.getElementById("chatMessages");
   const div = document.createElement("div");
-  div.className = type;
-  div.innerText = text;
+  div.className = type === "user" ? "user-message" : "bot-message";
+  div.innerHTML = text;
   chat.appendChild(div);
   chat.scrollTop = chat.scrollHeight;
 }
 
+/*********************
+  SMART BOT REPLY
+*********************/
 function getBotReply(msg) {
   msg = msg.toLowerCase();
-  if (msg.includes("ac")) return "Blue Star AC available. Same day delivery.";
-  if (msg.includes("solar")) return "Solar panels & inverter available.";
-  if (msg.includes("inverter")) return "1100VA inverter from ₹6,500.";
-  if (msg.includes("delivery")) return "Yes, same day delivery in Roorkee.";
-  if (msg.includes("price")) return "Product ka naam bataye.";
- return "📲 Talk to us directly on WhatsApp:\nhttps://wa.me/919548021272";
-}
-(function chatbotWelcome(){
-  const chat = document.getElementById("chatMessages");
-  if (!chat || chat.children.length) return;
 
-  const welcome = document.createElement("div");
-  welcome.className = "bot-message";
-  welcome.innerHTML = `
-    👋 <b>Welcome to Saini Electricals!</b><br>
-    How can I help you today?<br><br>
-    👉 <a href="https://wa.me/919548021272" target="_blank"
-      style="color:#fff;text-decoration:underline;font-weight:bold;">
-      Chat directly on WhatsApp
-    </a>
-  `;
-  chat.appendChild(welcome);
-})();
-/*********************
-  BACKGROUND EDITOR
-*********************/
-function enableBgEditor() {
-  if (document.getElementById("bgEditor")) return;
-
-  const bar = document.createElement("div");
-  bar.className = "admin-bar";
-  bar.id = "bgEditor";
-  bar.innerHTML = `
-    <h3>🎨 Background Editor</h3>
-    <input type="color" onchange="setBgColor(this.value)">
-    <input type="file" accept="image/*" onchange="setBgImage(this)">
-    <button onclick="resetBg()">Reset</button>
-  `;
-  document.body.insertBefore(bar, document.body.firstChild);
-}
-
-function setBgColor(color) {
-  document.body.style.backgroundColor = color;
-  document.body.style.backgroundImage = "none";
-  localStorage.setItem("bgColor", color);
-  localStorage.removeItem("bgImage");
-}
-
-function setBgImage(input) {
-  const file = input.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = () => {
-    document.body.style.backgroundImage = `url('${reader.result}')`;
-    document.body.style.backgroundSize = "cover";
-    document.body.style.backgroundPosition = "center";
-    localStorage.setItem("bgImage", reader.result);
-  };
-  reader.readAsDataURL(file);
-}
-
-function resetBg() {
-  localStorage.removeItem("bgColor");
-  localStorage.removeItem("bgImage");
-  document.body.style.background = "";
-}
-
-(function loadBg(){
-  const img = localStorage.getItem("bgImage");
-  const color = localStorage.getItem("bgColor");
-  if (img) {
-    document.body.style.backgroundImage = `url('${img}')`;
-    document.body.style.backgroundSize = "cover";
-    document.body.style.backgroundPosition = "center";
-  } else if (color) {
-    document.body.style.backgroundColor = color;
+  // CATEGORY MATCH
+  for (let category in data) {
+    if (msg.includes(category.toLowerCase())) {
+      return formatCategoryReply(category);
+    }
   }
-})();
-/*********************
- HERO BACKGROUND EDIT (EDIT MODE ONLY)
-*********************/
-function enableHeroBgEditor() {
-  if (document.getElementById("heroBgEditor")) return;
 
-  const bar = document.createElement("div");
-  bar.className = "admin-bar";
-  bar.id = "heroBgEditor";
-
-  bar.innerHTML = `
-    <h3>🖼️ Hero Background</h3>
-    <input type="file" accept="image/*" onchange="setHeroBg(this)">
-    <button onclick="resetHeroBg()">Reset Hero Background</button>
-  `;
-
-  document.body.insertBefore(bar, document.body.firstChild);
-}
-
-function setHeroBg(input) {
-  const file = input.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-  reader.onload = () => {
-    const hero = document.querySelector(".hero");
-    hero.style.backgroundImage = `url('${reader.result}')`;
-    hero.style.backgroundSize = "cover";
-    hero.style.backgroundPosition = "center";
-    localStorage.setItem("heroBg", reader.result);
-  };
-  reader.readAsDataURL(file);
-}
-
-function resetHeroBg() {
-  localStorage.removeItem("heroBg");
-  const hero = document.querySelector(".hero");
-  hero.style.backgroundImage =
-    "linear-gradient(135deg, var(--primary-color), #111)";
-}
-
-(function loadHeroBg(){
-  const bg = localStorage.getItem("heroBg");
-  if (bg) {
-    const hero = document.querySelector(".hero");
-    hero.style.backgroundImage = `url('${bg}')`;
-    hero.style.backgroundSize = "cover";
-    hero.style.backgroundPosition = "center";
+  // PRODUCT MATCH
+  for (let category in data) {
+    for (let product of data[category]) {
+      if (msg.includes(product.name.toLowerCase())) {
+        return `
+📦 <b>${product.name}</b><br>
+💰 Price: ₹${product.price}<br><br>
+👉 <a href="https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
+          "I want details about " + product.name
+        )}" target="_blank"
+style="color:#fff;font-weight:bold;">
+Chat on WhatsApp
+</a>`;
+      }
+    }
   }
-})();
 
+  return `
+🤖 You can ask about:<br>
+• Solar<br>
+• Inverter<br>
+• AC<br>
+• Batteries<br><br>
+Type product or category name 👇
+`;
+}
 
+function formatCategoryReply(category) {
+  let reply = `🔹 <b>${category}</b><br><br>`;
+  data[category].forEach(p => {
+    reply += `• ${p.name} – ₹${p.price}<br>`;
+  });
+
+  reply += `<br>
+👉 <a href="https://wa.me/${whatsappNumber}" target="_blank"
+style="color:#fff;font-weight:bold;">
+Chat on WhatsApp
+</a>`;
+
+  return reply;
+}
