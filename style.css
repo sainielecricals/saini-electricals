@@ -401,5 +401,34 @@ body{
 .chat-suggestions .prod{
   color:#fff;
 }
+/* ===== VOICE MIC BUTTON ===== */
+#voiceBtn{
+  background: linear-gradient(135deg,#ff4d4d,#ff9900);
+  border: none;
+  color: white;
+  font-size: 18px;
+  padding: 10px 14px;
+  cursor: pointer;
+  border-radius: 50%;
+  margin-right: 6px;
+  box-shadow: 0 0 10px rgba(255,80,80,0.7);
+  transition: 0.3s;
+}
+
+#voiceBtn:hover{
+  transform: scale(1.15);
+  box-shadow: 0 0 18px rgba(255,120,0,0.9);
+}
+
+#voiceBtn.listening{
+  background: red;
+  animation: pulseMic 1s infinite;
+}
+
+@keyframes pulseMic{
+  0%{ box-shadow:0 0 5px red; }
+  50%{ box-shadow:0 0 20px red; }
+  100%{ box-shadow:0 0 5px red; }
+}
 
 
