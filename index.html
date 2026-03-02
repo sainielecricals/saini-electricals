@@ -1,34 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Saini Electricals – Roorkee</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <title>Saini Electricals – Roorkee</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
 
+<!-- CHAT FLOAT BUTTON -->
 <div id="chatButton" onclick="toggleChat()">💬</div>
 
+<!-- CHAT BOX -->
 <div id="chatBox" class="hidden">
   <div class="chat-header">
     Saini Electricals Assistant
     <span onclick="toggleChat()">✖</span>
   </div>
+
   <div id="chatMessages" class="chat-messages"></div>
 
   <div class="chat-input">
-    <input id="userInput" placeholder="Ask something...">
-    <button onclick="sendMessage()">Send</button>
+    <input id="userInput" placeholder="Ask something..." />
+    <button id="voiceBtn" onclick="startVoice()">🎤</button>
+    <button onclick="sendMessage()">▶</button>
   </div>
 </div>
 
+<!-- HERO -->
 <header class="hero">
   <h1>⚡ SAINI ELECTRICALS – ROORKEE</h1>
   <p>Lighting • Solar • AC • Inverter • Home Appliances</p>
+  <div class="buttons">
+    <button onclick="scrollToProducts()">Shop Now</button>
+    <a href="https://wa.me/919548021272" target="_blank">
+      <button class="whatsapp">Order on WhatsApp</button>
+    </a>
+  </div>
 </header>
 
-<div id="admin"></div>
+<section class="highlight">
+  ✔ Same Day Delivery in Roorkee |
+  ✔ AC & Solar Installation |
+  ✔ Bulk Discount |
+  ✔ Free Consultation
+</section>
+
+<div class="search-bar">
+  <input id="searchInput" placeholder="Search products..." onkeyup="searchProducts()" />
+</div>
+
+<div class="filter-bar" id="filterBar"></div>
+
 <div id="products"></div>
+
+<footer>
+  📍 Roorkee | 📞 9548021272 <br />
+  © 2026 Saini Electricals
+</footer>
 
 <script src="script.js"></script>
 </body>
