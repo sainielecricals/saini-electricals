@@ -247,3 +247,71 @@ window.addEventListener("load", () => {
     enableEditMode();
   }
 });
+/*********************
+  ADMIN PANEL (ADD PRODUCTS + CATEGORY)
+*********************/
+function showAdminPanel() {
+  if (document.getElementById("adminPanel")) return;
+
+  const panel = document.createElement("div");
+  panel.id = "adminPanel";
+  panel.className = "admin-bar";
+
+  panel.innerHTML = `
+    <h3>🛠 Admin Panel</h3>
+
+    <input id="newCategory" placeholder="New Category Name">
+    <button onclick="addCategory()">Add Category</button>
+
+    <hr>
+
+    <select id="categorySelect"></select><br>
+    <input id="productName" placeholder="Product Name">
+    <input id="productPrice" placeholder="Price">
+    <button onclick="addProduct()">Add Product</button>
+  `;
+
+  document.body.prepend(panel);
+  updateCategorySelect();
+}
+
+function updateCategorySelect() {
+  const select = document.getElementById("categorySelect");
+  if (!select) return;
+
+  select.innerHTML = "";
+  Object.keys(data).forEach(cat => {
+    const opt = document.createElement("option");
+    opt.value = cat;
+    opt.textContent = cat;
+    select.appendChild(opt);
+  });
+}
+
+function addCategory() {
+  const name = document.getElementById("newCategory").value.trim();
+  if (!name) return alert("Category name likh bhai");
+
+  if (!data[name]) {
+    data[name] = [];
+    saveData();
+    renderProducts();
+    createFilters();
+    updateCategorySelect();
+  }
+}
+
+function addProduct() {
+  const cat = document.getElementById("categorySelect").value;
+  const name = document.getElementById("productName").value.trim();
+  const price = document.getElementById("productPrice").value.trim();
+
+  if (!name || !price) return alert("Product name + price dono likh");
+
+  data[cat].push({ name, price });
+  saveData();
+  renderProducts();
+  createFilters();
+  enableEditMode();
+}
+
