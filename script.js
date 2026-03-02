@@ -164,6 +164,7 @@ function sendMessage() {
   setTimeout(() => {
     addChat(getBotReply(msg), "bot");
   }, 400);
+  hideSuggestions();
 }
 
 function addChat(text, type) {
@@ -192,6 +193,7 @@ ${renderQuickButtons()}
 `, "bot");
     }
   }
+  showRecentSearch();
 }
 
 function handleKey(e) {
@@ -209,6 +211,7 @@ function sendMessage() {
   setTimeout(() => {
     addChat(getBotReply(msg), "bot");
   }, 400);
+  saveRecentSearch(msg);
 }
 
 function addChat(text, type) {
@@ -299,6 +302,7 @@ function renderQuickButtons() {
   SMART BOT REPLY
 *********************/
 function getBotReply(msg) {
+  msg = autoCorrect(msg);
   msg = msg.toLowerCase();
 
   // CATEGORY MATCH
@@ -365,5 +369,70 @@ style="color:#00ff88;font-weight:bold;">
 WhatsApp pe baat karein 📲
 </a>
 `;
+}
+/*********************
+  RECENT SEARCH
+*********************/
+let recentSearches = JSON.parse(localStorage.getItem("recentSearches")) || [];
+
+function saveRecentSearch(text){
+  if (!text) return;
+  recentSearches = recentSearches.filter(t => t !== text);
+  recentSearches.unshift(text);
+  recentSearches = recentSearches.slice(0,5);
+  localStorage.setItem("recentSearches", JSON.stringify(recentSearches));
+}
+
+function showRecentSearch(){
+  const box = document.getElementById("chatSuggestions");
+  box.innerHTML = "";
+
+  recentSearches.forEach(t => {
+    const div = document.createElement("div");
+    div.innerText = "🕘 " + t;
+    div.onclick = () => {
+      document.getElementById("userInput").value = t;
+      sendMessage();
+    };
+    box.appendChild(div);
+  });
+
+  if (recentSearches.length) box.classList.remove("hidden");
+}
+/*********************
+  AI SPELL CORRECTION
+*********************/
+function autoCorrect(msg){
+  const map = {
+    solr: "solar",
+    invetr: "inverter",
+    battry: "battery",
+    wir: "wire",
+    cabel: "cable",
+    panal: "panel",
+    acs: "ac"
+  };
+
+  let words = msg.split(" ");
+  words = words.map(w => map[w] || w);
+  return words.join(" ");
+}
+/*********************
+  VOICE INPUT
+*********************/
+function startVoice(){
+  if (!('webkitSpeechRecognition' in window)) {
+    alert("Voice typing not supported");
+    return;
+  }
+
+  const rec = new webkitSpeechRecognition();
+  rec.lang = "en-IN";
+  rec.onresult = e => {
+    const text = e.results[0][0].transcript;
+    document.getElementById("userInput").value = text;
+    document.getElementById("userInput").dispatchEvent(new Event("input"));
+  };
+  rec.start();
 }
 
