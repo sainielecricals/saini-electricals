@@ -5,61 +5,123 @@ body{
   color:#fff;
 }
 
+/* HERO */
 .hero{
   text-align:center;
-  padding:50px;
+  padding:60px 20px;
   background:linear-gradient(135deg,#ff7a00,#111);
 }
 
-.category{padding:20px}
+.hero-buttons{
+  margin-top:20px;
+}
+
+.hero button{
+  padding:10px 20px;
+  margin:5px;
+  border:none;
+  border-radius:6px;
+  background:#ff9800;
+  cursor:pointer;
+}
+
+.whatsapp-btn{
+  padding:10px 20px;
+  border-radius:6px;
+  background:#25D366;
+  color:#fff;
+  text-decoration:none;
+}
+
+/* SEARCH */
+.search-container{
+  text-align:center;
+  padding:20px;
+}
+
+.search-container input{
+  width:300px;
+  padding:10px;
+  border-radius:6px;
+  border:none;
+}
+
+/* FILTER */
+.filter-bar{
+  text-align:center;
+  margin-bottom:20px;
+}
+
+.filter-bar button{
+  margin:5px;
+  padding:8px 15px;
+  border:none;
+  border-radius:6px;
+  background:#ff7a00;
+  cursor:pointer;
+}
+
+/* PRODUCTS */
+#products{
+  text-align:center;
+}
+
+.category{
+  margin:40px 0;
+}
+
 .card{
   background:#1b1b1b;
-  padding:15px;
-  margin:10px;
-  border-radius:10px;
   width:260px;
+  padding:20px;
+  margin:15px;
+  border-radius:15px;
   display:inline-block;
   vertical-align:top;
+  box-shadow:0 0 20px rgba(255,122,0,0.3);
 }
 
-.card button{margin:4px}
-
-textarea{
-  width:100%;
-  min-height:50px;
-  margin-top:4px;
+.card button{
+  padding:8px 15px;
+  border:none;
+  border-radius:6px;
+  background:#ff7a00;
+  cursor:pointer;
 }
-
-.hidden{display:none}
 
 /* CHAT */
 #chatButton{
   position:fixed;
   bottom:20px;
   right:20px;
-  font-size:22px;
   background:#ff00cc;
-  padding:14px;
+  padding:15px;
   border-radius:50%;
   cursor:pointer;
 }
 
 #chatBox{
   position:fixed;
-  bottom:80px;
+  bottom:90px;
   right:20px;
   width:320px;
-  height:420px;
+  height:450px;
   background:#000;
-  border-radius:15px;
+  border-radius:25px;
   display:flex;
   flex-direction:column;
+  overflow:hidden;
+}
+
+.hidden{
+  display:none;
 }
 
 .chat-header{
-  background:linear-gradient(90deg,#ff00cc,#3333ff);
-  padding:10px;
-  font-weight:bold;
+  background:linear-gradient(90deg,#ff00cc,#4f46ff);
+  padding:12px;
+  display:flex;
+  justify-content:space-between;
 }
 
 .chat-messages{
@@ -68,5 +130,14 @@ textarea{
   overflow:auto;
 }
 
-.user-message{background:#333;padding:6px;border-radius:8px;margin:4px;text-align:right}
-.bot-message{background:#ff00cc;padding:6px;border-radius:8px;margin:4px}
+.chat-input{
+  display:flex;
+  padding:10px;
+}
+
+.chat-input input{
+  flex:1;
+  padding:10px;
+  border-radius:20px;
+  border:none;
+}
