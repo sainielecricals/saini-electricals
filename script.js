@@ -1,86 +1,157 @@
-const password="dhairya123";
-const whatsapp="919548021272";
+const password = "dhairya123";
+const whatsapp = "919548021272";
 
-/* DATA */
-let data=JSON.parse(localStorage.getItem("sainiData"))||{
-  Solar:[{name:"Solar Panel 550W",price:28000}],
-  Inverter:[{name:"Inverter 1100VA",price:6500}]
-};
-save();
+/* ===== DATA INIT ===== */
+let data = JSON.parse(localStorage.getItem("sainiData"));
+if (!data) {
+  data = {
+    "Solar": [{
+      name:"Solar Panel 550W",
+      price:28000,
+      specs:"",
+      usage:"",
+      reviews:"",
+      warranty:""
+    }]
+  };
+  save();
+}
 
-function save(){localStorage.setItem("sainiData",JSON.stringify(data));}
+function save(){
+  localStorage.setItem("sainiData",JSON.stringify(data));
+}
 
-/* RENDER */
-const products=document.getElementById("products");
+/* ===== RENDER ===== */
+const products = document.getElementById("products");
+
 function render(){
   products.innerHTML="";
-  for(let c in data){
-    const sec=document.createElement("div");
-    sec.innerHTML=`<h2>${c}</h2>`;
-    data[c].forEach((p,i)=>{
+  for(let cat in data){
+    let sec=document.createElement("div");
+    sec.className="category";
+    sec.innerHTML=`<h2>${cat}</h2>`;
+
+    data[cat].forEach((p,i)=>{
       sec.innerHTML+=`
-      <div>
-        ${p.name} – ₹${p.price}
-        <button onclick="order('${c}',${i})">Order</button>
-        <button onclick="del('${c}',${i})">Delete</button>
+      <div class="card">
+        <h3>${p.name}</h3>
+        <p>₹ ${p.price}</p>
+
+        <button onclick="order('${cat}',${i})">Order</button>
+
+        <div class="edit hidden">
+          <textarea placeholder="Specifications">${p.specs}</textarea>
+          <textarea placeholder="Best Use">${p.usage}</textarea>
+          <textarea placeholder="Reviews">${p.reviews}</textarea>
+          <textarea placeholder="Warranty">${p.warranty}</textarea>
+          <button onclick="saveExtra('${cat}',${i},this)">Save</button>
+          <button onclick="del('${cat}',${i})">Delete</button>
+        </div>
       </div>`;
     });
+
     products.appendChild(sec);
   }
 }
 render();
 
-/* ADMIN MODE */
+/* ===== ACTIONS ===== */
+function order(c,i){
+  window.open(`https://wa.me/${whatsapp}?text=${encodeURIComponent(data[c][i].name)}`);
+}
+
+function del(c,i){
+  data[c].splice(i,1);
+  save();render();editMode();
+}
+
+function saveExtra(c,i,btn){
+  let t=btn.parentElement.querySelectorAll("textarea");
+  data[c][i].specs=t[0].value;
+  data[c][i].usage=t[1].value;
+  data[c][i].reviews=t[2].value;
+  data[c][i].warranty=t[3].value;
+  save();
+  alert("Saved for chatbot ✅");
+}
+
+/* ===== EDIT MODE ===== */
+function editMode(){
+  document.querySelectorAll(".edit").forEach(e=>e.classList.remove("hidden"));
+}
+
 if(new URLSearchParams(location.search).get("edit")===password){
-  adminRoot.innerHTML=`
-  <div class="admin-bar">
-    <input id="cat" placeholder="Category">
-    <button onclick="addCat()">Add Category</button><br>
-    <select id="sel"></select>
-    <input id="name" placeholder="Product">
-    <input id="price" placeholder="Price">
+  document.getElementById("admin").innerHTML=`
+    <input id="newCat" placeholder="Category">
+    <button onclick="addCat()">Add Category</button><br><br>
+    <select id="catSel"></select>
+    <input id="newName" placeholder="Product name">
+    <input id="newPrice" placeholder="Price">
     <button onclick="addProd()">Add Product</button>
-  </div>`;
+  `;
   updateSel();
+  editMode();
 }
 
 function updateSel(){
-  sel.innerHTML="";
-  for(let c in data)sel.innerHTML+=`<option>${c}</option>`;
+  catSel.innerHTML="";
+  for(let c in data) catSel.innerHTML+=`<option>${c}</option>`;
 }
+
 function addCat(){
-  if(!cat.value)return;
-  if(!data[cat.value]){data[cat.value]=[];save();render();updateSel();}
+  if(!newCat.value) return;
+  data[newCat.value]=[];
+  save();render();updateSel();
 }
+
 function addProd(){
-  data[sel.value].push({name:name.value,price:price.value});
-  save();render();
+  data[catSel.value].push({
+    name:newName.value,
+    price:newPrice.value,
+    specs:"",
+    usage:"",
+    reviews:"",
+    warranty:""
+  });
+  save();render();editMode();
 }
 
-/* ACTIONS */
-function del(c,i){data[c].splice(i,1);save();render();}
-function order(c,i){
-  window.open(`https://wa.me/${whatsapp}?text=${data[c][i].name}`);
+/* ===== CHAT ===== */
+function toggleChat(){
+  chatBox.classList.toggle("hidden");
 }
 
-/* CHAT */
-chatToggle.onclick=()=>chatBox.classList.toggle("hidden");
-chatClose.onclick=()=>chatBox.classList.add("hidden");
-sendBtn.onclick=send;
-voiceBtn.onclick=startVoice;
+function sendMessage(){
+  if(!userInput.value) return;
+  addChat(userInput.value,"user");
 
-function send(){
-  if(!userInput.value)return;
-  chatMessages.innerHTML+=`<div class="user">${userInput.value}</div>`;
-  chatMessages.innerHTML+=`<div class="bot">WhatsApp kare 👉 ${whatsapp}</div>`;
+  setTimeout(()=>{
+    addChat(botReply(userInput.value),"bot");
+  },400);
+
   userInput.value="";
 }
 
-/* VOICE */
-function startVoice(){
-  if(!("webkitSpeechRecognition"in window))return alert("Chrome use karo");
-  const r=new webkitSpeechRecognition();
-  r.lang="en-IN";
-  r.onresult=e=>userInput.value=e.results[0][0].transcript;
-  r.start();
+function addChat(t,type){
+  let d=document.createElement("div");
+  d.className=type==="user"?"user-message":"bot-message";
+  d.innerHTML=t;
+  chatMessages.appendChild(d);
+}
+
+function botReply(msg){
+  msg=msg.toLowerCase();
+  for(let c in data){
+    for(let p of data[c]){
+      if(msg.includes(p.name.toLowerCase())){
+        return `<b>${p.name}</b><br>
+₹${p.price}<br>
+${p.specs}<br>
+${p.usage}<br>
+${p.reviews}<br>
+Warranty: ${p.warranty}`;
+      }
+    }
+  }
+  return "Product ka naam likhiye 😊";
 }
