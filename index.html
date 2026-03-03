@@ -2,33 +2,53 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Saini Electricals – Roorkee</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+<!-- HERO -->
+<header class="hero">
+  <h1>⚡ SAINI ELECTRICALS – ROORKEE</h1>
+  <p>Lighting • Solar • Fans • AC • Inverter • Home Appliances</p>
+
+  <div class="hero-buttons">
+    <button onclick="scrollToProducts()">Shop Now</button>
+    <a href="https://wa.me/919548021272" target="_blank" class="whatsapp-btn">
+      WhatsApp Us
+    </a>
+  </div>
+</header>
+
+<!-- SEARCH -->
+<div class="search-container">
+  <input type="text" id="searchInput" placeholder="Search products..." onkeyup="searchProducts()">
+</div>
+
+<!-- FILTER -->
+<div class="filter-bar" id="filterBar"></div>
+
+<!-- PRODUCTS -->
+<div id="products"></div>
+
+<!-- CHAT BUTTON -->
 <div id="chatButton" onclick="toggleChat()">💬</div>
 
+<!-- CHAT BOX -->
 <div id="chatBox" class="hidden">
   <div class="chat-header">
     Saini Electricals Assistant
     <span onclick="toggleChat()">✖</span>
   </div>
+
   <div id="chatMessages" class="chat-messages"></div>
 
   <div class="chat-input">
     <input id="userInput" placeholder="Ask something...">
-    <button onclick="sendMessage()">Send</button>
+    <button onclick="sendMessage()">➤</button>
   </div>
 </div>
-
-<header class="hero">
-  <h1>⚡ SAINI ELECTRICALS – ROORKEE</h1>
-  <p>Lighting • Solar • AC • Inverter • Home Appliances</p>
-</header>
-
-<div id="admin"></div>
-<div id="products"></div>
 
 <script src="script.js"></script>
 </body>
